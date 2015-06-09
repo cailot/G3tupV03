@@ -25,9 +25,11 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import seo.jin.hyung.g3tupv03.fragments.CountDownFragment;
-import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
+import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
 /**
  * The main activity for the Jumping Jack application. This activity registers itself to receive
@@ -63,53 +65,39 @@ public class MainActivity extends Activity
     private Sensor mSensor;
     private long mLastTime = 0;
     private boolean mUp = false;
-    private int mJumpCounter = 0;
-    private ViewPager mPager;
-    private CounterFragment mCounterPage;
+    private int jumpCounter = 0;
+    private ViewPager viewPager;
+//    private CounterFragment mCounterPage;
     private CountDownFragment countDownFragment;
-//    private ImageView mSecondIndicator;
-//    private ImageView mFirstIndicator;
-//    private Timer mTimer;
-//    private TimerTask mTimerTask;
-//    private Handler mHandler;
+
+    private Button btnStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.jj_layout);
+        setContentView(R.layout.main_layout);
         setupViews();
-//        mHandler = new Handler();
-        mJumpCounter = Utils.getCounterFromPreference(this);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        renewTimer();
+        jumpCounter = GetUpUtils.getCounterFromPreference(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
     }
 
     private void setupViews() {
-        mPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        btnStop = (Button) findViewById(R.id.btnStop);
         final PagerAdapter adapter = new PagerAdapter(getFragmentManager());
-
         countDownFragment = new CountDownFragment();
         adapter.addFragment(countDownFragment);
 //        mCounterPage = new CounterFragment();
 //        adapter.addFragment(mCounterPage);
-//        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int i, float v, int i2) {
-//            }
-//
-//            @Override
-//            public void onPageSelected(int i) {
-//                renewTimer();
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int i) {
-//            }
-//        });
+        viewPager.setAdapter(adapter);
+    }
 
-        mPager.setAdapter(adapter);
+
+    public void stopExercise(View view)
+    {
+        Log.d(TAG, "Successfully registered for the sensor updates");
+        countDownFragment.stopAnimation();
     }
 
     @Override
@@ -168,9 +156,8 @@ public class MainActivity extends Activity
         if (up) {
             return;
         }
-        mJumpCounter++;
-        setCounter(mJumpCounter);
-//        renewTimer();
+        jumpCounter++;
+        setCounter(jumpCounter);
     }
 
     /**
@@ -178,52 +165,11 @@ public class MainActivity extends Activity
      * reaches a multiple of 10.
      */
     private void setCounter(int i) {
-        mCounterPage.setCounter(i);
-        Utils.saveCounterToPreference(this, i);
+        countDownFragment.setCounter(i);
+        GetUpUtils.saveCounterToPreference(this, i);
         if (i > 0 && i % 10 == 0) {
-            Utils.vibrate(this, 0);
+            GetUpUtils.vibrate(this, 0);
         }
     }
 
-    public void resetCounter() {
-        setCounter(0);
-//        renewTimer();
-    }
-
-    /**
-     * Starts a timer to clear the flag FLAG_KEEP_SCREEN_ON.
-     */
-//    private void renewTimer() {
-//        if (null != mTimer) {
-//            mTimer.cancel();
-//        }
-//        mTimerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (Log.isLoggable(TAG, Log.DEBUG)) {
-//                    Log.d(TAG,
-//                            "Removing the FLAG_KEEP_SCREEN_ON flag to allow going to background");
-//                }
-//                resetFlag();
-//            }
-//        };
-//        mTimer = new Timer();
-//        mTimer.schedule(mTimerTask, SCREEN_ON_TIMEOUT_MS);
-//    }
-
-    /**
-     * Resets the FLAG_KEEP_SCREEN_ON flag so activity can go into background.
-     */
-//    private void resetFlag() {
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (Log.isLoggable(TAG, Log.DEBUG)) {
-//                    Log.d(TAG, "Resetting FLAG_KEEP_SCREEN_ON flag to allow going to background");
-//                }
-//                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//                finish();
-//            }
-//        });
-//    }
 }

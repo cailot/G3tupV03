@@ -19,6 +19,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
@@ -32,20 +33,23 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-       <!--
-        <ImageView
-            android:id="@+id/indicator_0"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/full_10"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:id="@+id/indicator_1"
-            android:src="@drawable/empty_10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-            -->
+            android:layout_height="wrap_content"
+            android:text="stop"
+            android:id="@+id/btnStop"
+            android:onClick="stopExercise"
+            android:layout_above="@+id/linearLayout"
+            android:layout_centerHorizontal="true" />
+
+
     </LinearLayout>
+
+
+
 
 </RelativeLayout>

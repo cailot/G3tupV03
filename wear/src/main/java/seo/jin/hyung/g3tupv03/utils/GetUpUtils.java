@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package seo.jin.hyung.g3tupv03;
+package seo.jin.hyung.g3tupv03.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,7 +24,7 @@ import android.preference.PreferenceManager;
 /**
  * A utility class for some helper methods.
  */
-public class Utils {
+public class GetUpUtils {
 
     private static final int DEFAULT_VIBRATION_DURATION_MS = 200; // in millis
     private static final String PREF_KEY_COUNTER = "counter";

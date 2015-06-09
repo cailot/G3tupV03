@@ -17,9 +17,11 @@
 package seo.jin.hyung.g3tupv03.fragments;
 
 import android.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,23 +37,42 @@ import seo.jin.hyung.g3tupv03.R;
  */
 public class CountDownFragment extends Fragment {
 
-    private static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
+
     private TextView bodyText;
-    private Timer exerciseTimer;
-    private Handler exerciseHandler;
-    private TimerTask exerciseTask;
+
 
     private CountDownTimer countDownTimer;
     private final long startTime = 10*1000;
     private final long interval = 1*1000;
 
-//    int count;
 
+
+    private boolean up = false;
+    private Drawable mDownDrawable;
+    private Drawable mUpDrawable;
+    private Timer exerciseTimer;
+    private Handler exerciseHandler;
+    private TimerTask exerciseTask;
+    private static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
+    int count;
+
+
+
+    // 1. start timer
+    // 2. when timer reaches to 0
+    // 2-1 trigger alarm & vibration on phone
+    // 2-2 start animation
+    // 3. update exercise count
+    // 4. when acount reaches to goal
+    // 4-1 trigger stop alarm & vibration on phone
+    // 4-2 display good message
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.counter_layout, container, false);
         bodyText = (TextView) view.findViewById(R.id.counter);
+        mDownDrawable = getResources().getDrawable(R.drawable.jump_down_50);
+        mUpDrawable = getResources().getDrawable(R.drawable.jump_up_50);
         startTimer();
         return view;
     }
@@ -61,6 +82,45 @@ public class CountDownFragment extends Fragment {
         countDownTimer = new MyCountDownTimer(startTime, interval);
         countDownTimer.start();
     }
+
+
+    private void startExercise()
+    {
+        bodyText.setText("" + 0);
+        bodyText.setCompoundDrawablesWithIntrinsicBounds(mUpDrawable, null, null, null);
+        exerciseHandler = new Handler();
+        startAnimation();
+    }
+
+    private void startAnimation() {
+        exerciseTask = new TimerTask() {
+            @Override
+            public void run() {
+                exerciseHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        count++;
+//                        Log.d("#############", "" + up);
+                        bodyText.setCompoundDrawablesWithIntrinsicBounds(
+                                up ? mUpDrawable : mDownDrawable, null, null, null);
+                        up = !up;
+                        setCounter(count);
+                    }
+                });
+            }
+        };
+        exerciseTimer = new Timer();
+        exerciseTimer.scheduleAtFixedRate(exerciseTask, ANIMATION_INTERVAL_MS,
+                ANIMATION_INTERVAL_MS);
+    }
+
+    public void stopAnimation()
+    {
+        exerciseTask.cancel();
+        bodyText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        bodyText.setText("Have a nice day !");
+    }
+
 
 
     public void setCounter(String text) {
@@ -101,6 +161,7 @@ public class CountDownFragment extends Fragment {
         @Override
         public void onFinish() {
             bodyText.setText("Finished");
+            startExercise();
         }
     }
 }

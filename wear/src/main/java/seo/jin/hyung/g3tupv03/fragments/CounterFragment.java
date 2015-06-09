@@ -30,7 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import seo.jin.hyung.g3tupv03.R;
-import seo.jin.hyung.g3tupv03.Utils;
+import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
 /**
  * A simple fragment for showing the count
@@ -56,7 +56,7 @@ public class CounterFragment extends Fragment {
         mUpDrawable = getResources().getDrawable(R.drawable.jump_up_50);
         mCounterText = (TextView) view.findViewById(R.id.counter);
         mCounterText.setCompoundDrawablesWithIntrinsicBounds(mUpDrawable, null, null, null);
-        setCounter(Utils.getCounterFromPreference(getActivity()));
+        setCounter(GetUpUtils.getCounterFromPreference(getActivity()));
         mHandler = new Handler();
         startAnimation();
         return view;
