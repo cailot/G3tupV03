@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 
 import seo.jin.hyung.g3tupv03.fragments.CountDownFragment;
+import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
 /**
@@ -46,21 +47,6 @@ import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 public class MainActivity extends Activity
         implements SensorEventListener {
 
-    private static final String TAG = "JJMainActivity";
-
-    /** How long to keep the screen on when no activity is happening **/
-    private static final long SCREEN_ON_TIMEOUT_MS = 15*1000;//60*1*1000; // in milliseconds - 1min
-    /** an up-down movement that takes more than this will not be registered as such **/
-    private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
-
-    /**
-     * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
-     * during the exercise so we leave some room. Basically if the x-component of gravity, as
-     * measured by the Gravity sensor, changes with a variation (delta) > GRAVITY_THRESHOLD,
-     * we consider that a successful count.
-     */
-    private static final float GRAVITY_THRESHOLD = 7.0f;
-
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private long mLastTime = 0;
@@ -77,7 +63,6 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         setupViews();
-        jumpCounter = GetUpUtils.getCounterFromPreference(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
     }
@@ -96,8 +81,8 @@ public class MainActivity extends Activity
 
     public void stopExercise(View view)
     {
-        Log.d(TAG, "Successfully registered for the sensor updates");
-        countDownFragment.stopAnimation();
+        Log.d(G3tUpConstants.TAG, "Stop Exercise");
+        countDownFragment.stopExercise();
     }
 
     @Override
@@ -105,8 +90,8 @@ public class MainActivity extends Activity
         super.onResume();
         if (mSensorManager.registerListener(this, mSensor,
                 SensorManager.SENSOR_DELAY_NORMAL)) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Successfully registered for the sensor updates");
+            if (Log.isLoggable(G3tUpConstants.TAG, Log.DEBUG)) {
+                Log.d(G3tUpConstants.TAG, "Successfully registered for the sensor updates");
             }
         }
     }
@@ -115,8 +100,8 @@ public class MainActivity extends Activity
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, "Unregistered for sensor events");
+        if (Log.isLoggable(G3tUpConstants.TAG, Log.DEBUG)) {
+            Log.d(G3tUpConstants.TAG, "Unregistered for sensor events");
         }
     }
 
@@ -139,8 +124,8 @@ public class MainActivity extends Activity
      * TIME_THRESHOLD_NS.
      */
     private void detectJump(float xValue, long timestamp) {
-        if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
-            if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
+        if ((Math.abs(xValue) > G3tUpConstants.GRAVITY_THRESHOLD)) {
+            if(timestamp - mLastTime < G3tUpConstants.TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
                 onJumpDetected(!mUp);
             }
             mUp = xValue > 0;
@@ -158,6 +143,12 @@ public class MainActivity extends Activity
         }
         jumpCounter++;
         setCounter(jumpCounter);
+
+
+        ///////////////////////////////////////////////////////
+        //  stop when reaching the goal, for example 10 times
+        ///////////////////////////////////////////////////////
+        countDownFragment.stopExercise();
     }
 
     /**

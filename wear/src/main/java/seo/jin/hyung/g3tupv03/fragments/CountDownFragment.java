@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import seo.jin.hyung.g3tupv03.R;
+import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 
 /**
  * A simple fragment for showing the count
@@ -53,7 +53,7 @@ public class CountDownFragment extends Fragment {
     private Timer exerciseTimer;
     private Handler exerciseHandler;
     private TimerTask exerciseTask;
-    private static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
+
     int count;
 
 
@@ -100,7 +100,6 @@ public class CountDownFragment extends Fragment {
                     @Override
                     public void run() {
                         count++;
-//                        Log.d("#############", "" + up);
                         bodyText.setCompoundDrawablesWithIntrinsicBounds(
                                 up ? mUpDrawable : mDownDrawable, null, null, null);
                         up = !up;
@@ -110,14 +109,20 @@ public class CountDownFragment extends Fragment {
             }
         };
         exerciseTimer = new Timer();
-        exerciseTimer.scheduleAtFixedRate(exerciseTask, ANIMATION_INTERVAL_MS,
-                ANIMATION_INTERVAL_MS);
+        exerciseTimer.scheduleAtFixedRate(exerciseTask, G3tUpConstants.ANIMATION_INTERVAL_MS,
+                G3tUpConstants.ANIMATION_INTERVAL_MS);
     }
 
-    public void stopAnimation()
+    public void stopExercise()
     {
-        exerciseTask.cancel();
+        //exerciseTask.cancel();
+        if(exerciseTimer != null)
+        {
+            exerciseTimer.cancel();
+            exerciseTimer = null;
+        }
         bodyText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        bodyText.setTextSize(15);
         bodyText.setText("Have a nice day !");
     }
 
@@ -160,7 +165,7 @@ public class CountDownFragment extends Fragment {
 
         @Override
         public void onFinish() {
-            bodyText.setText("Finished");
+//            bodyText.setText("Finished");
             startExercise();
         }
     }
