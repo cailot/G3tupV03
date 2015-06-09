@@ -17,10 +17,9 @@
 package seo.jin.hyung.g3tupv03.fragments;
 
 import android.app.Fragment;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import seo.jin.hyung.g3tupv03.R;
-import seo.jin.hyung.g3tupv03.Utils;
 
 /**
  * A simple fragment for showing the count
@@ -38,58 +36,35 @@ import seo.jin.hyung.g3tupv03.Utils;
 public class CountDownFragment extends Fragment {
 
     private static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
-    private TextView mCounterText;
-    private Timer mAnimationTimer;
-    private Handler mHandler;
-    private TimerTask mAnimationTask;
-    private boolean up = false;
-    private Drawable mDownDrawable;
-    private Drawable mUpDrawable;
+    private TextView bodyText;
+    private Timer exerciseTimer;
+    private Handler exerciseHandler;
+    private TimerTask exerciseTask;
 
-    int count;
+    private CountDownTimer countDownTimer;
+    private final long startTime = 10*1000;
+    private final long interval = 1*1000;
+
+//    int count;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.counter_layout, container, false);
-        mDownDrawable = getResources().getDrawable(R.drawable.jump_down_50);
-        mUpDrawable = getResources().getDrawable(R.drawable.jump_up_50);
-        mCounterText = (TextView) view.findViewById(R.id.counter);
-        mCounterText.setCompoundDrawablesWithIntrinsicBounds(mUpDrawable, null, null, null);
-        setCounter(Utils.getCounterFromPreference(getActivity()));
-        mHandler = new Handler();
-        startAnimation();
+        bodyText = (TextView) view.findViewById(R.id.counter);
+        startTimer();
         return view;
     }
 
-    private void startAnimation() {
-        mAnimationTask = new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        count++;
-                        Log.d("#############", "" + up);
-                        mCounterText.setCompoundDrawablesWithIntrinsicBounds(
-                                up ? mUpDrawable : mDownDrawable, null, null, null);
-                        up = !up;
-                        setCounter(count);
-                        if(count>10)
-                        {
-                            return;
-                        }
-                    }
-                });
-            }
-        };
-        mAnimationTimer = new Timer();
-        mAnimationTimer.scheduleAtFixedRate(mAnimationTask, ANIMATION_INTERVAL_MS,
-                ANIMATION_INTERVAL_MS);
+    private void startTimer()
+    {
+        countDownTimer = new MyCountDownTimer(startTime, interval);
+        countDownTimer.start();
     }
 
+
     public void setCounter(String text) {
-        mCounterText.setText(text);
+        bodyText.setText(text);
     }
 
     public void setCounter(int i) {
@@ -98,7 +73,34 @@ public class CountDownFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        mAnimationTimer.cancel();
+        exerciseTimer.cancel();
         super.onDetach();
+    }
+
+
+    public class MyCountDownTimer extends CountDownTimer
+    {
+
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            bodyText.setText("" + millisUntilFinished / 1000);
+
+        }
+
+        @Override
+        public void onFinish() {
+            bodyText.setText("Finished");
+        }
     }
 }
