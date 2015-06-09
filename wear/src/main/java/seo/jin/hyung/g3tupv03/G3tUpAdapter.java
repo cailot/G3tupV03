@@ -26,11 +26,11 @@ import java.util.List;
 /**
  * A simple adapter for the {@link android.support.v4.view.ViewPager}
  */
-public class PagerAdapter extends FragmentPagerAdapter {
+public class G3tUpAdapter extends FragmentPagerAdapter {
 
     List<Fragment> mFragments = null;
 
-    public PagerAdapter(FragmentManager fm) {
+    public G3tUpAdapter(FragmentManager fm) {
         super(fm);
         mFragments = new ArrayList<Fragment>();
     }

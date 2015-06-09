@@ -35,7 +35,7 @@ import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 /**
  * A simple fragment for showing the count
  */
-public class CountDownFragment extends Fragment {
+public class G3tUpFragment extends Fragment {
 
 
     private TextView bodyText;
@@ -48,8 +48,8 @@ public class CountDownFragment extends Fragment {
 
 
     private boolean up = false;
-    private Drawable mDownDrawable;
-    private Drawable mUpDrawable;
+    private Drawable downDrawable;
+    private Drawable upDrawable;
     private Timer exerciseTimer;
     private Handler exerciseHandler;
     private TimerTask exerciseTask;
@@ -71,8 +71,8 @@ public class CountDownFragment extends Fragment {
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.counter_layout, container, false);
         bodyText = (TextView) view.findViewById(R.id.counter);
-        mDownDrawable = getResources().getDrawable(R.drawable.jump_down_50);
-        mUpDrawable = getResources().getDrawable(R.drawable.jump_up_50);
+        downDrawable = getResources().getDrawable(R.drawable.jump_down_50);
+        upDrawable = getResources().getDrawable(R.drawable.jump_up_50);
         startTimer();
         return view;
     }
@@ -87,7 +87,7 @@ public class CountDownFragment extends Fragment {
     private void startExercise()
     {
         bodyText.setText("" + 0);
-        bodyText.setCompoundDrawablesWithIntrinsicBounds(mUpDrawable, null, null, null);
+        bodyText.setCompoundDrawablesWithIntrinsicBounds(upDrawable, null, null, null);
         exerciseHandler = new Handler();
         startAnimation();
     }
@@ -101,7 +101,7 @@ public class CountDownFragment extends Fragment {
                     public void run() {
                         count++;
                         bodyText.setCompoundDrawablesWithIntrinsicBounds(
-                                up ? mUpDrawable : mDownDrawable, null, null, null);
+                                up ? upDrawable : downDrawable, null, null, null);
                         up = !up;
                         setCounter(count);
                     }

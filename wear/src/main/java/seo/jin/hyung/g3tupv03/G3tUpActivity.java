@@ -28,7 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import seo.jin.hyung.g3tupv03.fragments.CountDownFragment;
+import seo.jin.hyung.g3tupv03.fragments.G3tUpFragment;
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
@@ -44,7 +44,7 @@ import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
  * counter is persisted so that upon re-launch, the counter picks up from the last value. At any
  * stage, user can set this counter to 0.
  */
-public class MainActivity extends Activity
+public class G3tUpActivity extends Activity
         implements SensorEventListener {
 
     private SensorManager mSensorManager;
@@ -54,7 +54,7 @@ public class MainActivity extends Activity
     private int jumpCounter = 0;
     private ViewPager viewPager;
 //    private CounterFragment mCounterPage;
-    private CountDownFragment countDownFragment;
+    private G3tUpFragment countDownFragment;
 
     private Button btnStop;
 
@@ -70,8 +70,8 @@ public class MainActivity extends Activity
     private void setupViews() {
         viewPager = (ViewPager) findViewById(R.id.pager);
         btnStop = (Button) findViewById(R.id.btnStop);
-        final PagerAdapter adapter = new PagerAdapter(getFragmentManager());
-        countDownFragment = new CountDownFragment();
+        final G3tUpAdapter adapter = new G3tUpAdapter(getFragmentManager());
+        countDownFragment = new G3tUpFragment();
         adapter.addFragment(countDownFragment);
 //        mCounterPage = new CounterFragment();
 //        adapter.addFragment(mCounterPage);
