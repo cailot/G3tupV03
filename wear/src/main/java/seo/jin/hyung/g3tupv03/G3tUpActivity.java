@@ -30,6 +30,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
+
 import seo.jin.hyung.g3tupv03.fragments.AbstractFragment;
 import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
 import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
@@ -60,7 +67,7 @@ import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
  *      4-2 display good message
  */
 public class G3tUpActivity extends Activity
-        implements SensorEventListener {
+        implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -80,6 +87,9 @@ public class G3tUpActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         setUpViews();
+
+        prepareCommunication();
+
         status = G3tUpConstants.COUNTER_STATE; // first fragment
         selectFragment();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -129,6 +139,13 @@ public class G3tUpActivity extends Activity
             if (jumpCounter >= 10) {
                 btnStop.setText("STOP");
                 fragment.stopAction();
+
+
+                message = G3tUpConstants.ALARM_STOP;
+                triggerActionOnPhone();
+
+
+
                 status = G3tUpConstants.DISPLAY_STATE;
                 selectFragment();
                 return;
@@ -221,6 +238,8 @@ public class G3tUpActivity extends Activity
         }
     }
 
+
+
     // This is timer class for CounterFragment
     public class MyCountDownTimer extends CountDownTimer
     {
@@ -230,7 +249,7 @@ public class G3tUpActivity extends Activity
 
         @Override
         public void onTick(long millisUntilFinished) {
-            Log.e(G3tUpConstants.TAG, "" + millisUntilFinished/1000);
+//            Log.e(G3tUpConstants.TAG, "" + millisUntilFinished/1000);
             fragment.setText("" + millisUntilFinished/1000);
 
         }
@@ -238,8 +257,109 @@ public class G3tUpActivity extends Activity
         @Override
         public void onFinish() {
 //            fragment.setText("Finished");
+            message = G3tUpConstants.ALARM_START;
+            triggerActionOnPhone();
+
             status = G3tUpConstants.EXERCISE_STATE;
             selectFragment();
         }
+    }
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+
+    GoogleApiClient googleApiClient;
+    String message;
+
+    private void prepareCommunication()
+    {
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
+        builder.addApi(Wearable.API);
+        builder.addConnectionCallbacks(this);
+        builder.addOnConnectionFailedListener(this);
+        googleApiClient = builder.build();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.e(G3tUpConstants.TAG, "onConnected()");
+//        triggerActionOnPhone();
+    }
+
+    public void triggerActionOnPhone()
+    {
+        if(googleApiClient!=null && googleApiClient.isConnected())
+        {
+            new SendMessageToDataLayer(G3tUpConstants.COMMUNICATIO_PATH, message).start();
+            Log.e(G3tUpConstants.TAG, "Communication thread has triggered");
+        }else{
+            Log.e(G3tUpConstants.TAG, "Failed to send messages");
+        }
+    }
+
+
+    public class SendMessageToDataLayer extends Thread
+    {
+        String path;
+        String message;
+
+        public SendMessageToDataLayer(String path, String message)
+        {
+            this.path = path;
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            NodeApi.GetConnectedNodesResult nodesResult = Wearable.NodeApi.getConnectedNodes(googleApiClient).await();
+            for(Node node : nodesResult.getNodes())
+            {
+                MessageApi.SendMessageResult messageResult = Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, message.getBytes()).await();
+                if(messageResult.getStatus().isSuccess())
+                {
+                    Log.e(G3tUpConstants.TAG, "Sent to " + node.getDisplayName());
+                    Log.e(G3tUpConstants.TAG, "Node Id is " + node.getId());
+                    Log.e(G3tUpConstants.TAG, "Node size is " + nodesResult.getNodes().size());
+                }else{
+                    Log.e(G3tUpConstants.TAG, "Error while sending message");
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        if(googleApiClient!=null && googleApiClient.isConnected())
+        {
+            googleApiClient.disconnect();
+        }
+        super.onStop();
     }
 }
