@@ -17,18 +17,23 @@
 package seo.jin.hyung.g3tupv03;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import seo.jin.hyung.g3tupv03.fragments.G3tUpFragment;
+import seo.jin.hyung.g3tupv03.fragments.AbstractFragment;
+import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
+import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
+import seo.jin.hyung.g3tupv03.fragments.ExerciseFragment;
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
@@ -43,6 +48,16 @@ import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
  * shows the current count and one that allows user to reset the counter. the current value of the
  * counter is persisted so that upon re-launch, the counter picks up from the last value. At any
  * stage, user can set this counter to 0.
+ *
+ * What to do ?
+ *  1. start timer
+ *  2. when timer reaches to 0
+ *      2-1 trigger alarm & vibration on phone
+ *      2-2 start animation
+ *  3. update exercise count
+ *  4. when acount reaches to goal
+ *      4-1 trigger stop alarm & vibration on phone
+ *      4-2 display good message
  */
 public class G3tUpActivity extends Activity
         implements SensorEventListener {
@@ -52,37 +67,77 @@ public class G3tUpActivity extends Activity
     private long mLastTime = 0;
     private boolean mUp = false;
     private int jumpCounter = 0;
-    private ViewPager viewPager;
-//    private CounterFragment mCounterPage;
-    private G3tUpFragment countDownFragment;
 
     private Button btnStop;
+
+
+    private int status = 0;
+
+    private AbstractFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        setupViews();
+        setUpViews();
+        status = G3tUpConstants.COUNTER_STATE; // first fragment
+        selectFragment();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
     }
 
-    private void setupViews() {
-        viewPager = (ViewPager) findViewById(R.id.pager);
+    // initialise component, in this case it just show Button for test
+    private void setUpViews()
+    {
         btnStop = (Button) findViewById(R.id.btnStop);
-        final G3tUpAdapter adapter = new G3tUpAdapter(getFragmentManager());
-        countDownFragment = new G3tUpFragment();
-        adapter.addFragment(countDownFragment);
-//        mCounterPage = new CounterFragment();
-//        adapter.addFragment(mCounterPage);
-        viewPager.setAdapter(adapter);
     }
 
 
-    public void stopExercise(View view)
+    // determine displaying fragment based on status
+    private void selectFragment()
     {
-        Log.d(G3tUpConstants.TAG, "Stop Exercise");
-        countDownFragment.stopExercise();
+        fragment = null;
+        // If CounterFragment is about to display, trigger timer as well
+        if(status==G3tUpConstants.COUNTER_STATE)
+        {
+            fragment = new CounterFragment();
+            CountDownTimer timer = new MyCountDownTimer(G3tUpConstants.SECOND*10, G3tUpConstants.SECOND);
+            timer.start();
+        // ExerciseFragment
+        }else if(status==G3tUpConstants.EXERCISE_STATE){
+            fragment = new ExerciseFragment();
+
+        // DisplayFragment
+        }else{
+            fragment = new DisplayFragment();
+        }
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ftx = fm.beginTransaction();
+        ftx.replace(R.id.fragment_place, fragment);
+        ftx.commit();
+    }
+
+    // event handler when button pressed. this is just for testing purpose
+    public void clickButton(View view)
+    {
+        if(status==G3tUpConstants.COUNTER_STATE) {
+
+        }else if(status == G3tUpConstants.EXERCISE_STATE) {
+            jumpCounter++;
+            Log.e(G3tUpConstants.TAG, "Stop Exercise - " + jumpCounter);
+
+            if (jumpCounter >= 10) {
+                btnStop.setText("STOP");
+                fragment.stopAction();
+                status = G3tUpConstants.DISPLAY_STATE;
+                selectFragment();
+                return;
+            }
+            fragment.setText(jumpCounter);
+        }else{
+            // dismiss
+            Log.e(G3tUpConstants.TAG, "Dismiss Activity ?");
+        }
     }
 
     @Override
@@ -148,7 +203,7 @@ public class G3tUpActivity extends Activity
         ///////////////////////////////////////////////////////
         //  stop when reaching the goal, for example 10 times
         ///////////////////////////////////////////////////////
-        countDownFragment.stopExercise();
+        //countDownFragment.stopExercise();
     }
 
     /**
@@ -156,11 +211,31 @@ public class G3tUpActivity extends Activity
      * reaches a multiple of 10.
      */
     private void setCounter(int i) {
-        countDownFragment.setCounter(i);
         GetUpUtils.saveCounterToPreference(this, i);
         if (i > 0 && i % 10 == 0) {
             GetUpUtils.vibrate(this, 0);
         }
     }
 
+    // This is timer class for CounterFragment
+    public class MyCountDownTimer extends CountDownTimer
+    {
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            Log.e(G3tUpConstants.TAG, "" + millisUntilFinished/1000);
+            fragment.setText("" + millisUntilFinished/1000);
+
+        }
+
+        @Override
+        public void onFinish() {
+//            fragment.setText("Finished");
+            status = G3tUpConstants.EXERCISE_STATE;
+            selectFragment();
+        }
+    }
 }

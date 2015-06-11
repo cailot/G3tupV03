@@ -27,15 +27,17 @@ import seo.jin.hyung.g3tupv03.R;
 /**
  * A simple fragment for showing the count
  */
-public class CounterFragment extends AbstractFragment {
+public class DisplayFragment extends AbstractFragment {
+
 
     private TextView bodyText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.counter_layout, container, false);
-        bodyText = (TextView) view.findViewById(R.id.counterText);
+            Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.display_layout, container, false);
+        bodyText = (TextView) view.findViewById(R.id.displayText);
+        setText("Have a nice day!");
         return view;
     }
 

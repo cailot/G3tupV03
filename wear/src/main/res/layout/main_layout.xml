@@ -15,18 +15,10 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-
-
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000"
-        />
 
     <LinearLayout
         android:layout_alignParentBottom="true"
@@ -34,22 +26,29 @@
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:id="@+id/linearLayout">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="stop"
-            android:id="@+id/btnStop"
-            android:onClick="stopExercise"
-            android:layout_above="@+id/linearLayout"
-            android:layout_centerHorizontal="true" />
+        <fragment
+            android:id="@+id/fragment_place"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
+            tools:layout="@layout/main_layout" />
+
+
 
 
     </LinearLayout>
 
-
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        android:id="@+id/btnStop"
+        android:onClick="clickButton"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

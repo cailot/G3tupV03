@@ -16,11 +16,9 @@
 
 package seo.jin.hyung.g3tupv03.fragments;
 
-import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,75 +28,98 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import seo.jin.hyung.g3tupv03.R;
+import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
 
 /**
  * A simple fragment for showing the count
  */
-public class ExerciseFragment extends Fragment {
+public class ExerciseFragment extends AbstractFragment {
 
-    private static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
-    private TextView mCounterText;
-    private Timer mAnimationTimer;
-    private Handler mHandler;
-    private TimerTask mAnimationTask;
+    private TextView bodyText;
+    private Timer exerciseTimer;
+    private Handler exerciseHandler;
+    private TimerTask exerciseTask;
     private boolean up = false;
-    private Drawable mDownDrawable;
-    private Drawable mUpDrawable;
+    private Drawable downDrawable;
+    private Drawable upDrawable;
 
-    int count;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.counter_layout, container, false);
-        mDownDrawable = getResources().getDrawable(R.drawable.jump_down_50);
-        mUpDrawable = getResources().getDrawable(R.drawable.jump_up_50);
-        mCounterText = (TextView) view.findViewById(R.id.counter);
-        mCounterText.setCompoundDrawablesWithIntrinsicBounds(mUpDrawable, null, null, null);
-        setCounter(GetUpUtils.getCounterFromPreference(getActivity()));
-        mHandler = new Handler();
+        View view = inflater.inflate(R.layout.exercise_layout, container, false);
+        downDrawable = getResources().getDrawable(R.drawable.jump_down_50);
+        upDrawable = getResources().getDrawable(R.drawable.jump_up_50);
+        bodyText = (TextView) view.findViewById(R.id.exerciseText);
+//        bodyText.setCompoundDrawablesWithIntrinsicBounds(upDrawable, null, null, null);
+        setText(GetUpUtils.getCounterFromPreference(getActivity()));
+        exerciseHandler = new Handler();
         startAnimation();
         return view;
     }
 
+    // start animation
     private void startAnimation() {
-        mAnimationTask = new TimerTask() {
+        exerciseTask = new TimerTask() {
             @Override
             public void run() {
-                mHandler.post(new Runnable() {
+                exerciseHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        count++;
-                        Log.d("#############", "" + up);
-                        mCounterText.setCompoundDrawablesWithIntrinsicBounds(
-                                up ? mUpDrawable : mDownDrawable, null, null, null);
+//                        Log.e("#############", "" + up);
+                        bodyText.setCompoundDrawablesWithIntrinsicBounds(
+                                up ? upDrawable : downDrawable, null, null, null);
                         up = !up;
-                        setCounter(count);
-                        if(count>10)
-                        {
-                            return;
-                        }
                     }
                 });
             }
         };
-        mAnimationTimer = new Timer();
-        mAnimationTimer.scheduleAtFixedRate(mAnimationTask, ANIMATION_INTERVAL_MS,
-                ANIMATION_INTERVAL_MS);
-    }
-
-    public void setCounter(String text) {
-        mCounterText.setText(text);
-    }
-
-    public void setCounter(int i) {
-        setCounter(i < 0 ? "0" : String.valueOf(i));
+        exerciseTimer = new Timer();
+        exerciseTimer.scheduleAtFixedRate(exerciseTask, G3tUpConstants.SECOND,
+                G3tUpConstants.SECOND);
     }
 
     @Override
-    public void onDetach() {
-        mAnimationTimer.cancel();
-        super.onDetach();
+    public void setText(int i) {
+        setText(i < 0 ? "0" : String.valueOf(i));
     }
+
+    @Override
+    public void setText(String s) {
+        bodyText.setText(s);
+    }
+
+    @Override
+    public void stopAction() {
+        //exerciseTask.cancel();
+        if(exerciseTimer != null)
+        {
+            exerciseTimer.cancel();
+            exerciseTimer = null;
+        }
+    }
+    /*
+    public void setText(String text) {
+        bodyText.setText(text);
+    }
+
+    public void setText(int i) {
+        setText(i < 0 ? "0" : String.valueOf(i));
+    }
+
+    public void stopAction()
+    {
+        //exerciseTask.cancel();
+        if(exerciseTimer != null)
+        {
+            exerciseTimer.cancel();
+            exerciseTimer = null;
+        }
+        bodyText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        bodyText.setTextSize(15);
+        bodyText.setText("Have a nice day !");
+    }
+*/
+
 }

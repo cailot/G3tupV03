@@ -19,6 +19,7 @@ public interface G3tUpConstants
     /**
      * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
      * during the exercise so we leave some room. Basically if the x-component of gravity, as
+     *
      * measured by the Gravity sensor, changes with a variation (delta) > GRAVITY_THRESHOLD,
      * we consider that a successful count.
      */
@@ -29,5 +30,15 @@ public interface G3tUpConstants
 
 
 
-    public static final long ANIMATION_INTERVAL_MS = 1000; // in milliseconds
+    public static final long SECOND = 1000; // in milliseconds
+
+
+
+// staus of fragment
+    public static final int COUNTER_STATE = 0;
+    public static final int EXERCISE_STATE = 1;
+    public static final int DISPLAY_STATE = 2;
+
+
+
 }
