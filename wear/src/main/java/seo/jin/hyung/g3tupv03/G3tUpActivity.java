@@ -211,7 +211,11 @@ public class G3tUpActivity extends Activity
      * reaches a multiple of 10.
      */
     private void setCounter(int i) {
-        GetUpUtils.saveCounterToPreference(this, i);
+//        GetUpUtils.saveCounterToPreference(this, i);
+//        if((status==G3tUpConstants.EXERCISE_STATE) && (fragment!=null))
+//        {
+//            fragment.setText(i);
+//        }
         if (i > 0 && i % 10 == 0) {
             GetUpUtils.vibrate(this, 0);
         }
