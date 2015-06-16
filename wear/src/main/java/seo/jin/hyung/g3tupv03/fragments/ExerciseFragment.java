@@ -29,7 +29,7 @@ import java.util.TimerTask;
 
 import seo.jin.hyung.g3tupv03.R;
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
-import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
+import seo.jin.hyung.g3tupv03.utils.G3tUpUtils;
 
 /**
  * A simple fragment for showing the count
@@ -53,7 +53,7 @@ public class ExerciseFragment extends AbstractFragment {
         upDrawable = getResources().getDrawable(R.drawable.jump_up_50);
         bodyText = (TextView) view.findViewById(R.id.exerciseText);
 //        bodyText.setCompoundDrawablesWithIntrinsicBounds(upDrawable, null, null, null);
-        setText(GetUpUtils.getCounterFromPreference(getActivity()));
+        setText(G3tUpUtils.getCounterFromPreference(getActivity()));
         exerciseHandler = new Handler();
         startAnimation();
         return view;

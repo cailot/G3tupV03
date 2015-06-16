@@ -24,18 +24,15 @@ import android.preference.PreferenceManager;
 /**
  * A utility class for some helper methods.
  */
-public class GetUpUtils {
+public class G3tUpUtils {
 
     /**
      * Causes device to vibrate for the given duration (in millis). If duration is set to 0, then it
      * will use the <code>DEFAULT_VIBRATION_DURATION_MS</code>.
      */
-    public final static void vibrate(Context context, int duration) {
-        if (duration == 0) {
-            duration = G3tUpConstants.DEFAULT_VIBRATION_DURATION_MS;
-        }
+    public final static void vibrate(Context context) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(duration);
+        v.vibrate(G3tUpConstants.DEFAULT_VIBRATION_DURATION_MS);
     }
 
     /**

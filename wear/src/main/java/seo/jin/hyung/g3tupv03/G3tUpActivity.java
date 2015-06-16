@@ -42,7 +42,7 @@ import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
 import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
 import seo.jin.hyung.g3tupv03.fragments.ExerciseFragment;
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
-import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
+import seo.jin.hyung.g3tupv03.utils.G3tUpUtils;
 
 /**
  * The main activity for the Jumping Jack application. This activity registers itself to receive
@@ -62,17 +62,22 @@ import seo.jin.hyung.g3tupv03.utils.GetUpUtils;
  *      2-1 trigger alarm & vibration on phone
  *      2-2 start animation
  *  3. update exercise count
- *  4. when acount reaches to goal
+ *  4. when count reaches to goal
  *      4-1 trigger stop alarm & vibration on phone
  *      4-2 display good message
  */
 public class G3tUpActivity extends Activity
         implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
-    private long mLastTime = 0;
-    private boolean mUp = false;
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private long lastTime = 0;
+
+
+    private float last_x, last_y, last_z;
+
+
+
     private int jumpCounter = 0;
 
     private Button btnStop;
@@ -81,6 +86,13 @@ public class G3tUpActivity extends Activity
     private int status = 0;
 
     private AbstractFragment fragment;
+
+
+//    private DismissOverlayView mDismissOverlay;
+//    private GestureDetector mDetector;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +104,14 @@ public class G3tUpActivity extends Activity
 
         status = G3tUpConstants.COUNTER_STATE; // first fragment
         selectFragment();
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+
+
     }
+
 
     // initialise component, in this case it just show Button for test
     private void setUpViews()
@@ -133,34 +150,39 @@ public class G3tUpActivity extends Activity
         if(status==G3tUpConstants.COUNTER_STATE) {
 
         }else if(status == G3tUpConstants.EXERCISE_STATE) {
-            jumpCounter++;
-            Log.e(G3tUpConstants.TAG, "Stop Exercise - " + jumpCounter);
-
-            if (jumpCounter >= 10) {
-                btnStop.setText("STOP");
-                fragment.stopAction();
-
-
-                message = G3tUpConstants.ALARM_STOP;
-                triggerActionOnPhone();
-
-
-
-                status = G3tUpConstants.DISPLAY_STATE;
-                selectFragment();
-                return;
-            }
-            fragment.setText(jumpCounter);
+            increaseCount();
         }else{
             // dismiss
             Log.e(G3tUpConstants.TAG, "Dismiss Activity ?");
         }
     }
 
+    private void increaseCount()
+    {
+        jumpCounter++;
+        Log.e(G3tUpConstants.TAG, "Exercise - " + jumpCounter);
+
+        if (jumpCounter >= G3tUpConstants.EXERCISE_MAX) {
+            btnStop.setText("STOP");
+            fragment.stopAction();
+
+
+            message = G3tUpConstants.ALARM_STOP;
+            triggerActionOnPhone();
+
+
+
+            status = G3tUpConstants.DISPLAY_STATE;
+            selectFragment();
+            return;
+        }
+        fragment.setText(jumpCounter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (mSensorManager.registerListener(this, mSensor,
+        if (sensorManager.registerListener(this, sensor,
                 SensorManager.SENSOR_DELAY_NORMAL)) {
             if (Log.isLoggable(G3tUpConstants.TAG, Log.DEBUG)) {
                 Log.d(G3tUpConstants.TAG, "Successfully registered for the sensor updates");
@@ -171,74 +193,55 @@ public class G3tUpActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this);
         if (Log.isLoggable(G3tUpConstants.TAG, Log.DEBUG)) {
             Log.d(G3tUpConstants.TAG, "Unregistered for sensor events");
         }
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
-        detectJump(event.values[0], event.timestamp);
+    public void onSensorChanged(SensorEvent event)
+    {
+        Sensor g3tupSensor = event.sensor;
+
+        if( (status==G3tUpConstants.EXERCISE_STATE) && (fragment!=null) && (g3tupSensor.getType() == Sensor.TYPE_ACCELEROMETER) )
+        {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            long currentTime = System.currentTimeMillis();
+
+            long diffTime = currentTime - lastTime;
+//            if( diffTime > 100)
+            if (diffTime > 150)
+            {
+                lastTime = currentTime;
+                float speed = Math.abs(x + y + z - last_x - last_y - last_z)/diffTime * 10000;
+//                Toast.makeText(this, "Speed - " + speed, Toast.LENGTH_LONG);
+                if(speed > G3tUpConstants.SHAKE_THRESHOLD)
+                {
+
+                    // increase number
+                    G3tUpUtils.vibrate(this);
+                    increaseCount();
+
+
+
+                    // update on phone
+                    message = jumpCounter + "";
+                    triggerActionOnPhone();
+                }
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-
-    /**
-     * A simple algorithm to detect a successful up-down movement of hand(s). The algorithm is
-     * based on the assumption that when a person is wearing the watch, the x-component of gravity
-     * as measured by the Gravity Sensor is +9.8 when the hand is downward and -9.8 when the hand
-     * is upward (signs are reversed if the watch is worn on the right hand). Since the upward or
-     * downward may not be completely accurate, we leave some room and instead of 9.8, we use
-     * GRAVITY_THRESHOLD. We also consider the up <-> down movement successful if it takes less than
-     * TIME_THRESHOLD_NS.
-     */
-    private void detectJump(float xValue, long timestamp) {
-        if ((Math.abs(xValue) > G3tUpConstants.GRAVITY_THRESHOLD)) {
-            if(timestamp - mLastTime < G3tUpConstants.TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
-                onJumpDetected(!mUp);
-            }
-            mUp = xValue > 0;
-            mLastTime = timestamp;
-        }
-    }
-
-    /**
-     * Called on detection of a successful down -> up or up -> down movement of hand.
-     */
-    private void onJumpDetected(boolean up) {
-        // we only count a pair of up and down as one successful movement
-        if (up) {
-            return;
-        }
-        jumpCounter++;
-        setCounter(jumpCounter);
-
-
-        ///////////////////////////////////////////////////////
-        //  stop when reaching the goal, for example 10 times
-        ///////////////////////////////////////////////////////
-        //countDownFragment.stopExercise();
-    }
-
-    /**
-     * Updates the counter on UI, saves it to preferences and vibrates the watch when counter
-     * reaches a multiple of 10.
-     */
-    private void setCounter(int i) {
-//        GetUpUtils.saveCounterToPreference(this, i);
-//        if((status==G3tUpConstants.EXERCISE_STATE) && (fragment!=null))
-//        {
-//            fragment.setText(i);
-//        }
-        if (i > 0 && i % 10 == 0) {
-            GetUpUtils.vibrate(this, 0);
-        }
-    }
-
-
 
     // This is timer class for CounterFragment
     public class MyCountDownTimer extends CountDownTimer
@@ -352,6 +355,7 @@ public class G3tUpActivity extends Activity
     protected void onStart() {
         super.onStart();
         googleApiClient.connect();
+        Log.e(G3tUpConstants.TAG, "onStop()");
     }
 
     @Override
@@ -361,5 +365,6 @@ public class G3tUpActivity extends Activity
             googleApiClient.disconnect();
         }
         super.onStop();
+        Log.e(G3tUpConstants.TAG, "onStop()");
     }
 }

@@ -55,5 +55,8 @@ public interface G3tUpConstants
     public static final int ALARM_STOP_STATE = START_STATE + 4;
 
 
+    public static final int SHAKE_THRESHOLD = 1000;//600;
+
+    public static final int EXERCISE_MAX = 6;
 
 }

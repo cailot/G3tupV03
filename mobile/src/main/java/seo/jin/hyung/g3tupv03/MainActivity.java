@@ -1,6 +1,7 @@
 package seo.jin.hyung.g3tupv03;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -78,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
         } catch (IOException e) {
             Log.e(G3tUpConstants.TAG, "Failed to prepare media player to play alarm \n" + e);
         }
-        mediaPlayer.start();
+//        mediaPlayer.start();
 
         // start vibration as well
         alarmVibration.vibrate(1000*60);
@@ -90,10 +91,10 @@ public class MainActivity extends ActionBarActivity {
     private void stopAlarm()
     {
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
-        if(mediaPlayer.isPlaying())
-        {
-            mediaPlayer.stop();
-        }
+//        if(mediaPlayer.isPlaying())
+//        {
+//            mediaPlayer.stop();
+//        }
         alarmVibration.cancel();
 
         // stop vibration as well
@@ -128,7 +129,12 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
+
+
+//            return true;
         }
 
         return super.onOptionsItemSelected(item);
