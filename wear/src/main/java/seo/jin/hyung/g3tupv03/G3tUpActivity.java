@@ -20,12 +20,14 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -88,10 +90,10 @@ public class G3tUpActivity extends Activity
     private AbstractFragment fragment;
 
 
-//    private DismissOverlayView mDismissOverlay;
-//    private GestureDetector mDetector;
+    private long timerDuration;
+    private int exerciseCount;
 
-
+    private String version = "v04";
 
 
     @Override
@@ -99,7 +101,7 @@ public class G3tUpActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         setUpViews();
-
+        setUpThreshold();
         prepareCommunication();
 
         status = G3tUpConstants.COUNTER_STATE; // first fragment
@@ -108,15 +110,23 @@ public class G3tUpActivity extends Activity
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-
-
     }
 
 
     // initialise component, in this case it just show Button for test
     private void setUpViews()
     {
+
         btnStop = (Button) findViewById(R.id.btnStop);
+    }
+
+    // load info from SharedPreference
+    private void setUpThreshold()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        timerDuration = Long.parseLong(preferences.getString("timerSet", "30"));
+        exerciseCount = Integer.parseInt(preferences.getString("exerciseSet","5"));
+        btnStop.setText(exerciseCount + " - " + version);
     }
 
 
@@ -128,7 +138,7 @@ public class G3tUpActivity extends Activity
         if(status==G3tUpConstants.COUNTER_STATE)
         {
             fragment = new CounterFragment();
-            CountDownTimer timer = new MyCountDownTimer(G3tUpConstants.SECOND*10, G3tUpConstants.SECOND);
+            CountDownTimer timer = new MyCountDownTimer(G3tUpConstants.SECOND*timerDuration, G3tUpConstants.SECOND);
             timer.start();
         // ExerciseFragment
         }else if(status==G3tUpConstants.EXERCISE_STATE){
@@ -162,8 +172,7 @@ public class G3tUpActivity extends Activity
         jumpCounter++;
         Log.e(G3tUpConstants.TAG, "Exercise - " + jumpCounter);
 
-        if (jumpCounter >= G3tUpConstants.EXERCISE_MAX) {
-            btnStop.setText("STOP");
+        if (jumpCounter >= exerciseCount) {
             fragment.stopAction();
 
 
@@ -267,7 +276,6 @@ public class G3tUpActivity extends Activity
             selectFragment();
         }
     }
-
 
 
 

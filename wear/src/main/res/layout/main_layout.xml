@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 The Android Open Source Project
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:background="@color/white">
 
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:keepScreenOn="true"
+        android:id="@+id/linearLayout">
 
-          http://www.apache.org/licenses/LICENSE-2.0
+        <fragment
+            android:id="@+id/fragment_place"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true"
+            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
+            tools:layout="@layout/main_layout" />
+    </LinearLayout>
 
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        android:id="@+id/btnStop"
+        android:onClick="clickButton"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
+    -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,6 +48,7 @@
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:keepScreenOn="true"
         android:orientation="vertical"
         android:id="@+id/linearLayout">
 
@@ -35,10 +58,6 @@
             android:layout_height="match_parent"
             android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
             tools:layout="@layout/main_layout" />
-
-
-
-
     </LinearLayout>
 
     <Button
@@ -49,12 +68,4 @@
         android:id="@+id/btnStop"
         android:onClick="clickButton"
         android:layout_centerHorizontal="true" />
-
-
-    <!-- ##### Dismiss ####### -->
-    <android.support.wearable.view.DismissOverlayView
-        android:id="@+id/dismiss_overlay"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
-
 </RelativeLayout>

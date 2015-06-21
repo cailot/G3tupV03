@@ -2,12 +2,14 @@ package seo.jin.hyung.g3tupv03;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +33,12 @@ public class MainActivity extends ActionBarActivity {
     private Uri alarmSound;
     private MediaPlayer mediaPlayer;
 
+    private boolean isSoundOn, isVibrationOn;
+
+    private String version = "v01";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         // initialise audioManager & vibrator
         setUpAlarm();
+        // load config items from SharedPreference
+        setUpConfig();
         flagText = (TextView) findViewById(R.id.flagText);
         String message = getIntent().getStringExtra(G3tUpConstants.FLAG_FROM_CLIENT);
         if(message==null || message.equalsIgnoreCase(""))
@@ -64,41 +74,76 @@ public class MainActivity extends ActionBarActivity {
         mediaPlayer = new MediaPlayer();
     }
 
+    private void setUpConfig()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        isSoundOn = preferences.getBoolean("soundSet", false);
+        isVibrationOn = preferences.getBoolean("vibrationSet", false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showSetting();
+    }
 
     // trigger alarm with maximum volume & vibration
     private void startAlarm()
     {
-        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-        mediaPlayer.reset();
-        // max volume
-        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        try{
-            mediaPlayer.setDataSource(getApplicationContext(), alarmSound);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            Log.e(G3tUpConstants.TAG, "Failed to prepare media player to play alarm \n" + e);
+
+        if(isSoundOn)
+        {
+            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+            mediaPlayer.reset();
+            // max volume
+            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            try{
+                mediaPlayer.setDataSource(getApplicationContext(), alarmSound);
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                Log.e(G3tUpConstants.TAG, "Failed to prepare media player to play alarm \n" + e);
+            }
+            mediaPlayer.start();
         }
-//        mediaPlayer.start();
-
         // start vibration as well
-        alarmVibration.vibrate(1000*60);
+        if(isVibrationOn) {
+            alarmVibration.vibrate(1000 * 60 * 5);
+            // Start immediately
+            // Vibrate for 200 milliseconds
+            // Sleep for 500 milliseconds
+//            long[] pattern = { 10, 200, 0 };
+//            alarmVibration.vibrate(pattern, 0);
 
+        }
         Log.e(G3tUpConstants.TAG, "Start Alarm");
     }
 
     // stop alarm and vibration. rollback volume to original state
     private void stopAlarm()
     {
-        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
-//        if(mediaPlayer.isPlaying())
-//        {
-//            mediaPlayer.stop();
-//        }
-        alarmVibration.cancel();
+        if(isSoundOn) {
+            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+        }
 
-        // stop vibration as well
-        alarmVibration = null;
+        if(isVibrationOn) {
+            flagText.setText("Got stop sign");
+            Log.e(G3tUpConstants.TAG, "Got stop sign");
+            alarmVibration.cancel();
+            alarmVibration = null;
+//            alarmVibration.cancel();
+            flagText.setText("STOPPPPPP!!!!");
+            Log.e(G3tUpConstants.TAG, "Stopped");
+
+//            long[] pattern = {0, 100, 100};
+//            alarmVibration.vibrate(pattern, 1);
+//            alarmVibration.vibrate(500);
+            // stop vibration as well
+//            alarmVibration = null;
+        }
         Log.e(G3tUpConstants.TAG, "Stop Alarm");
     }
 
@@ -132,9 +177,6 @@ public class MainActivity extends ActionBarActivity {
 
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
-
-
-//            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -146,6 +188,24 @@ public class MainActivity extends ActionBarActivity {
             audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
             mediaPlayer.release();
         }
+
         super.onDestroy();
     }
+
+    private void showSetting()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        StringBuilder builder = new StringBuilder();
+        builder.append(version + "\n");
+        builder.append("\nTimer : " + preferences.getString("timerSet","NULL"));
+        builder.append("\nExercise : " + preferences.getString("exerciseSet","NULL"));
+        builder.append("\nSound : " + preferences.getBoolean("soundSet", false));
+        builder.append("\nVibratons : " + preferences.getBoolean("vibrationSet", false));
+        builder.append("\nButton : " + preferences.getBoolean("buttonSet", false));
+        flagText.setText(builder.toString());
+        Log.e(G3tUpConstants.TAG, builder.toString());
+
+
+    }
+
 }
