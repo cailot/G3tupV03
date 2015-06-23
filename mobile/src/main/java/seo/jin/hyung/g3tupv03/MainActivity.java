@@ -1,5 +1,7 @@
 package seo.jin.hyung.g3tupv03;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,8 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 
@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         showSetting();
     }
-
+/*
     // trigger alarm with maximum volume & vibration
     private void startAlarm()
     {
@@ -109,11 +109,6 @@ public class MainActivity extends ActionBarActivity {
         // start vibration as well
         if(isVibrationOn) {
             alarmVibration.vibrate(1000 * 60 * 5);
-            // Start immediately
-            // Vibrate for 200 milliseconds
-            // Sleep for 500 milliseconds
-//            long[] pattern = { 10, 200, 0 };
-//            alarmVibration.vibrate(pattern, 0);
 
         }
         Log.e(G3tUpConstants.TAG, "Start Alarm");
@@ -146,6 +141,40 @@ public class MainActivity extends ActionBarActivity {
         }
         Log.e(G3tUpConstants.TAG, "Stop Alarm");
     }
+*/
+
+
+
+    private void startAlarm() {
+//        Intent intent = new Intent(this, G3tUpReceiver.class);
+//        intent.putExtra(G3tUpConstants.ACTION, G3tUpConstants.ALARM_START);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+//        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
+        triggerAlarm(G3tUpConstants.ALARM_START);
+    }
+
+    private void stopAlarm() {
+//        Intent intent = new Intent(this, G3tUpReceiver.class);
+//        intent.putExtra(G3tUpConstants.ACTION, G3tUpConstants.ALARM_STOP);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+//        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
+        triggerAlarm(G3tUpConstants.ALARM_STOP);
+    }
+
+    private void triggerAlarm(String action)
+    {
+        Intent intent = new Intent(this, G3tUpReceiver.class);
+        intent.putExtra(G3tUpConstants.ACTION, action);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
+    }
+
 
 
     public void startClick(View view)

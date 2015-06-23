@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Timer Setting" >
+        <EditTextPreference
+            android:key="timerSet"
+            android:summary="After when do you want to wake up ?"
+            android:title="Seconds"
+            android:inputType="number"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Exercise Setting" >
+        <EditTextPreference
+            android:key="exerciseSet"
+            android:summary="How many stretching you want ?"
+            android:title="Times"
+            android:inputType="number"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Alarm Setting" >
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="soundSet"
+            android:switchTextOff="OFF"
+            android:switchTextOn="ON"
+            android:title="Enable Sound" />
+
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="vibrationSet"
+            android:switchTextOff="OFF"
+            android:switchTextOn="ON"
+            android:title="Enable Vibration" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Cheating Button Display" >
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="buttonSet"
+            android:switchTextOff="OFF"
+            android:switchTextOn="ON"
+            android:title="Display Button" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

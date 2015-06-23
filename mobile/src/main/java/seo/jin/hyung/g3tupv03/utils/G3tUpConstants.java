@@ -39,4 +39,7 @@ public interface G3tUpConstants
     public static final String FLAG_FROM_CLIENT = "flag_from_client";
 
 
+    public static final String ACTION = "action";
+
+
 }
