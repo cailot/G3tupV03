@@ -45,6 +45,8 @@ public interface G3tUpConstants
 
     public static final String VIBRATION = "vibration";
 
+    public static final String RELEASE = "release";
+
 
 
 }

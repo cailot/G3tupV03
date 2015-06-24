@@ -44,7 +44,6 @@ import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
 import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
 import seo.jin.hyung.g3tupv03.fragments.ExerciseFragment;
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
-import seo.jin.hyung.g3tupv03.utils.G3tUpUtils;
 
 /**
  * The main activity for the Jumping Jack application. This activity registers itself to receive
@@ -93,7 +92,7 @@ public class G3tUpActivity extends Activity
     private long timerDuration;
     private int exerciseCount;
 
-    private String version = "v04";
+    private String version = "v07";
 
 
     @Override
@@ -232,7 +231,7 @@ public class G3tUpActivity extends Activity
                 {
 
                     // increase number
-                    G3tUpUtils.vibrate(this);
+//                    G3tUpUtils.vibrate(this);
                     increaseCount();
 
 

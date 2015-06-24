@@ -19,25 +19,20 @@ import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
  */
 public class G3tUpReceiver extends BroadcastReceiver {
 
+    // Vibration
     static Vibrator vibrator;
-    long pattern[] = {10, 200, 0};
+    private long pattern[] = {10, 200, 0};
 
-
+    // Sound
     static AudioManager audioManager;
+    static MediaPlayer mediaPlayer;
     private int originalVolume;
     private int maxVolume;
     private Uri alarmSound;
-    private MediaPlayer mediaPlayer;
-
-
-
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
         setupAlarm(context);
-
-
         String action = intent.getStringExtra(G3tUpConstants.ACTION);
         boolean isSound = intent.getBooleanExtra(G3tUpConstants.SOUND, false);
         boolean isVibration = intent.getBooleanExtra(G3tUpConstants.VIBRATION, false);
@@ -48,7 +43,6 @@ public class G3tUpReceiver extends BroadcastReceiver {
             if(isVibration) {
                 vibrator.vibrate(pattern, 0);
             }
-
             if(isSound){
                 originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                 mediaPlayer.reset();
@@ -72,14 +66,15 @@ public class G3tUpReceiver extends BroadcastReceiver {
 
             if(isSound){
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
-//                if (mediaPlayer.isPlaying()) {
+                if (mediaPlayer.isPlaying()) {
                     mediaPlayer.stop();
-//                }
+                }
             }
 
             Log.d(G3tUpConstants.TAG, "Alarm stops");
 
-        }else{
+        }else{// if((action!=null) && (action.equalsIgnoreCase(G3tUpConstants.RELEASE))){
+//            release();
             Log.d(G3tUpConstants.TAG, "Nothing happens");
 
         }
@@ -87,16 +82,27 @@ public class G3tUpReceiver extends BroadcastReceiver {
 
     private void setupAlarm(Context context)
     {
-        if(vibrator==null) {
+        if(vibrator == null) {
             vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         }
 
-        if(audioManager==null){
+        if(audioManager == null){
             audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         }
         originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mediaPlayer = new MediaPlayer();
+
+        if(mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+        }
+    }
+
+    private void release()
+    {
+        if(audioManager!=null && mediaPlayer!=null) {
+            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
+            mediaPlayer.release();
+        }
     }
 }

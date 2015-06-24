@@ -71,6 +71,7 @@ public class ExerciseFragment extends AbstractFragment {
                         bodyText.setCompoundDrawablesWithIntrinsicBounds(
                                 up ? upDrawable : downDrawable, null, null, null);
                         up = !up;
+                        G3tUpUtils.vibrate(getActivity().getApplicationContext());
                     }
                 });
             }

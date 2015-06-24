@@ -7,7 +7,7 @@ public interface G3tUpConstants
 {
     public static final String TAG = "### JINHYUNG ###";
 
-    public static final int DEFAULT_VIBRATION_DURATION_MS = 200; // in millis
+    public static final int DEFAULT_VIBRATION_DURATION_MS = 100; // in millis
 
     public static final String PREF_KEY_COUNTER = "counter";
 
