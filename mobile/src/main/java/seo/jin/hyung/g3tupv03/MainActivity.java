@@ -22,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
 
     private boolean isSoundOn, isVibrationOn;
 
-    private String version = "v08";
+    private String version = "v09";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

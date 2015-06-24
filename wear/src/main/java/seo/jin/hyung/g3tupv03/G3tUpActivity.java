@@ -39,6 +39,8 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.concurrent.TimeUnit;
+
 import seo.jin.hyung.g3tupv03.fragments.AbstractFragment;
 import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
 import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
@@ -70,25 +72,10 @@ import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 public class G3tUpActivity extends Activity
         implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-
-    /** an up-down movement that takes more than this will not be registered as such **/
-    private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
-
-    /**
-     * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
-     * during the exercise so we leave some room. Basically if the x-component of gravity, as
-     * measured by the Gravity sensor, changes with a variation (delta) > GRAVITY_THRESHOLD,
-     * we consider that a successful count.
-     */
-    private static final float GRAVITY_THRESHOLD = 7.0f;
-
     private SensorManager sensorManager;
     private Sensor sensor;
     private long lastTime = 0;
     private boolean up;
-
-
-    private float last_x, last_y, last_z;
 
 
 
@@ -105,7 +92,7 @@ public class G3tUpActivity extends Activity
     private long timerDuration;
     private int exerciseCount;
 
-    private String version = "v08";
+    private String version = "v09";
 
 
     @Override
@@ -254,8 +241,8 @@ public class G3tUpActivity extends Activity
      * TIME_THRESHOLD_NS.
      */
     private void detectJump(float xValue, long timestamp) {
-        if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
-            if(timestamp - lastTime < TIME_THRESHOLD_NS && up != (xValue > 0)) {
+        if ((Math.abs(xValue) > G3tUpConstants.GRAVITY_THRESHOLD)) {
+            if(timestamp - lastTime < G3tUpConstants.TIME_THRESHOLD_NS && up != (xValue > 0)) {
                 onJumpDetected(!up);
             }
             up = xValue > 0;
@@ -271,86 +258,9 @@ public class G3tUpActivity extends Activity
         if (up) {
             return;
         }
-//        mJumpCounter++;
-//        setCounter(mJumpCounter);
-
+        // update screen
         increaseCount();
-
-        // update on phone
-//        message = jumpCounter + "";
-//        triggerActionOnPhone();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- /*   @Override
-    public void onSensorChanged(SensorEvent event)
-    {
-        Sensor g3tupSensor = event.sensor;
-
-        if( (status==G3tUpConstants.EXERCISE_STATE) && (fragment!=null) && (g3tupSensor.getType() == Sensor.TYPE_ACCELEROMETER) )
-        {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            long currentTime = System.currentTimeMillis();
-
-            long diffTime = currentTime - lastTime;
-//            if( diffTime > 100)
-            if (diffTime > 150)
-            {
-                lastTime = currentTime;
-                float speed = Math.abs(x + y + z - last_x - last_y - last_z)/diffTime * 10000;
-//                Toast.makeText(this, "Speed - " + speed, Toast.LENGTH_LONG);
-                if(speed > G3tUpConstants.SHAKE_THRESHOLD)
-                {
-
-                    // increase number
-//                    G3tUpUtils.vibrate(this);
-                    increaseCount();
-
-
-
-                    // update on phone
-                    message = jumpCounter + "";
-                    triggerActionOnPhone();
-                }
-                last_x = x;
-                last_y = y;
-                last_z = z;
-            }
-        }
-    }
-*/
 
     // This is timer class for CounterFragment
     public class MyCountDownTimer extends CountDownTimer
@@ -362,7 +272,17 @@ public class G3tUpActivity extends Activity
         @Override
         public void onTick(long millisUntilFinished) {
 //            Log.e(G3tUpConstants.TAG, "" + millisUntilFinished/1000);
-            fragment.setText("" + millisUntilFinished/1000);
+            long seconds = (long) millisUntilFinished/1000;
+            String remain = String.format("%d Min %d Sec",
+                    TimeUnit.SECONDS.toMinutes(seconds),
+                    TimeUnit.SECONDS.toSeconds(seconds) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(seconds))
+
+            );
+            fragment.setText(remain);
+
+
+//            fragment.setText("" + millisUntilFinished/1000);
 
         }
 
