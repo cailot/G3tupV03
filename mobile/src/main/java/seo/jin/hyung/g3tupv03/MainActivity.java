@@ -5,12 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -26,16 +21,16 @@ public class MainActivity extends ActionBarActivity {
 
     private TextView flagText;
 
-    private Vibrator alarmVibration;
-    private AudioManager audioManager;
-    private int originalVolume;
-    private int maxVolume;
-    private Uri alarmSound;
-    private MediaPlayer mediaPlayer;
+//    private Vibrator alarmVibration;
+//    private AudioManager audioManager;
+//    private int originalVolume;
+//    private int maxVolume;
+//    private Uri alarmSound;
+//    private MediaPlayer mediaPlayer;
 
     private boolean isSoundOn, isVibrationOn;
 
-    private String version = "v01";
+    private String version = "v05";
 
 
 
@@ -55,10 +50,12 @@ public class MainActivity extends ActionBarActivity {
             message = "Nothing comes from client";
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_START)){
             // start ring & vibration
-            startAlarm();
+            triggerAlarm(G3tUpConstants.ALARM_START);
+//            startAlarm();
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_STOP)){
             // stop ring & vibration
-            stopAlarm();
+            triggerAlarm(G3tUpConstants.ALARM_STOP);
+//            stopAlarm();
         }
         flagText.setText(message);
     }
@@ -66,12 +63,12 @@ public class MainActivity extends ActionBarActivity {
     // initialise vibration & alarm components
     private void setUpAlarm()
     {
-        alarmVibration = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-        alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mediaPlayer = new MediaPlayer();
+//        alarmVibration = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+//        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+//        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+//        alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+//        mediaPlayer = new MediaPlayer();
     }
 
     private void setUpConfig()
@@ -145,30 +142,13 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-    private void startAlarm() {
-//        Intent intent = new Intent(this, G3tUpReceiver.class);
-//        intent.putExtra(G3tUpConstants.ACTION, G3tUpConstants.ALARM_START);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-//        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
-        triggerAlarm(G3tUpConstants.ALARM_START);
-    }
-
-    private void stopAlarm() {
-//        Intent intent = new Intent(this, G3tUpReceiver.class);
-//        intent.putExtra(G3tUpConstants.ACTION, G3tUpConstants.ALARM_STOP);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-//        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
-        triggerAlarm(G3tUpConstants.ALARM_STOP);
-    }
-
     private void triggerAlarm(String action)
     {
         Intent intent = new Intent(this, G3tUpReceiver.class);
         intent.putExtra(G3tUpConstants.ACTION, action);
+        intent.putExtra(G3tUpConstants.SOUND, isSoundOn);
+        intent.putExtra(G3tUpConstants.VIBRATION, isVibrationOn);
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
@@ -179,12 +159,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void startClick(View view)
     {
-        startAlarm();
+        triggerAlarm(G3tUpConstants.ALARM_START);
     }
 
     public void stopClick(View view)
     {
-        stopAlarm();
+        triggerAlarm(G3tUpConstants.ALARM_STOP);
     }
 
     @Override
@@ -213,10 +193,10 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        if(audioManager!=null && mediaPlayer!=null) {
-            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
-            mediaPlayer.release();
-        }
+//        if(audioManager!=null && mediaPlayer!=null) {
+//            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
+//            mediaPlayer.release();
+//        }
 
         super.onDestroy();
     }

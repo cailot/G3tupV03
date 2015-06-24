@@ -41,5 +41,10 @@ public interface G3tUpConstants
 
     public static final String ACTION = "action";
 
+    public static final String SOUND = "sound";
+
+    public static final String VIBRATION = "vibration";
+
+
 
 }
