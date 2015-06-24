@@ -70,9 +70,22 @@ import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 public class G3tUpActivity extends Activity
         implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+
+    /** an up-down movement that takes more than this will not be registered as such **/
+    private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
+
+    /**
+     * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
+     * during the exercise so we leave some room. Basically if the x-component of gravity, as
+     * measured by the Gravity sensor, changes with a variation (delta) > GRAVITY_THRESHOLD,
+     * we consider that a successful count.
+     */
+    private static final float GRAVITY_THRESHOLD = 7.0f;
+
     private SensorManager sensorManager;
     private Sensor sensor;
     private long lastTime = 0;
+    private boolean up;
 
 
     private float last_x, last_y, last_z;
@@ -92,7 +105,7 @@ public class G3tUpActivity extends Activity
     private long timerDuration;
     private int exerciseCount;
 
-    private String version = "v07";
+    private String version = "v08";
 
 
     @Override
@@ -106,8 +119,9 @@ public class G3tUpActivity extends Activity
         status = G3tUpConstants.COUNTER_STATE; // first fragment
         selectFragment();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+//        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -169,16 +183,13 @@ public class G3tUpActivity extends Activity
     private void increaseCount()
     {
         jumpCounter++;
-        Log.e(G3tUpConstants.TAG, "Exercise - " + jumpCounter);
+        Log.d(G3tUpConstants.TAG, "Exercise - " + jumpCounter);
 
         if (jumpCounter >= exerciseCount) {
             fragment.stopAction();
 
-
             message = G3tUpConstants.ALARM_STOP;
             triggerActionOnPhone();
-
-
 
             status = G3tUpConstants.DISPLAY_STATE;
             selectFragment();
@@ -186,6 +197,23 @@ public class G3tUpActivity extends Activity
         }
         fragment.setText(jumpCounter);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     protected void onResume() {
@@ -208,6 +236,82 @@ public class G3tUpActivity extends Activity
     }
 
     @Override
+    public void onSensorChanged(SensorEvent event) {
+        detectJump(event.values[0], event.timestamp);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    /**
+     * A simple algorithm to detect a successful up-down movement of hand(s). The algorithm is
+     * based on the assumption that when a person is wearing the watch, the x-component of gravity
+     * as measured by the Gravity Sensor is +9.8 when the hand is downward and -9.8 when the hand
+     * is upward (signs are reversed if the watch is worn on the right hand). Since the upward or
+     * downward may not be completely accurate, we leave some room and instead of 9.8, we use
+     * GRAVITY_THRESHOLD. We also consider the up <-> down movement successful if it takes less than
+     * TIME_THRESHOLD_NS.
+     */
+    private void detectJump(float xValue, long timestamp) {
+        if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
+            if(timestamp - lastTime < TIME_THRESHOLD_NS && up != (xValue > 0)) {
+                onJumpDetected(!up);
+            }
+            up = xValue > 0;
+            lastTime = timestamp;
+        }
+    }
+
+    /**
+     * Called on detection of a successful down -> up or up -> down movement of hand.
+     */
+    private void onJumpDetected(boolean up) {
+        // we only count a pair of up and down as one successful movement
+        if (up) {
+            return;
+        }
+//        mJumpCounter++;
+//        setCounter(mJumpCounter);
+
+        increaseCount();
+
+        // update on phone
+//        message = jumpCounter + "";
+//        triggerActionOnPhone();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*   @Override
     public void onSensorChanged(SensorEvent event)
     {
         Sensor g3tupSensor = event.sensor;
@@ -246,10 +350,7 @@ public class G3tUpActivity extends Activity
             }
         }
     }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
+*/
 
     // This is timer class for CounterFragment
     public class MyCountDownTimer extends CountDownTimer

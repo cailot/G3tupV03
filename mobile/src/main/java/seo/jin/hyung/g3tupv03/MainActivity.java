@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
@@ -23,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
 
     private boolean isSoundOn, isVibrationOn;
 
-    private String version = "v07";
+    private String version = "v08";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +71,15 @@ public class MainActivity extends ActionBarActivity {
         Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
     }
 
-    public void startClick(View view)
-    {
-        triggerAlarm(G3tUpConstants.ALARM_START);
-    }
-
-    public void stopClick(View view)
-    {
-        triggerAlarm(G3tUpConstants.ALARM_STOP);
-    }
+//    public void startClick(View view)
+//    {
+//        triggerAlarm(G3tUpConstants.ALARM_START);
+//    }
+//
+//    public void stopClick(View view)
+//    {
+//        triggerAlarm(G3tUpConstants.ALARM_STOP);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
