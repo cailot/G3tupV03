@@ -90,6 +90,7 @@ public class G3tUpActivity extends Activity
 
     private long timerDuration;
     private int exerciseCount;
+    private boolean isCheatingEnabled;
 
     private String version = "v11";
 
@@ -125,6 +126,9 @@ public class G3tUpActivity extends Activity
 
 
         exerciseCount = Integer.parseInt(preferences.getString("exerciseSet", "5"));
+
+        isCheatingEnabled = preferences.getBoolean("cheatSet", false);
+
         btnStop.setText(exerciseCount + " - " + version);
     }
 
@@ -144,8 +148,10 @@ public class G3tUpActivity extends Activity
             ///////////////////////
             // Temporary Button
             //////////////////////
-            btnStop.setVisibility(View.VISIBLE);
 
+            if(isCheatingEnabled) {
+                btnStop.setVisibility(View.VISIBLE);
+            }
             fragment = new ExerciseFragment();
 
             // DisplayFragment
@@ -154,8 +160,9 @@ public class G3tUpActivity extends Activity
             ///////////////////////
             // Temporary Button
             //////////////////////
-            btnStop.setVisibility(View.INVISIBLE);
-
+            if(isCheatingEnabled) {
+                btnStop.setVisibility(View.INVISIBLE);
+            }
             fragment = new DisplayFragment();
         }
         FragmentManager fm = getFragmentManager();

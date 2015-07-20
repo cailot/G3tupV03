@@ -1,41 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true"
-    android:background="@color/white">
-
-    <LinearLayout
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:keepScreenOn="true"
-        android:id="@+id/linearLayout">
-
-        <fragment
-            android:id="@+id/fragment_place"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:keepScreenOn="true"
-            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
-            tools:layout="@layout/main_layout" />
-    </LinearLayout>
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Count"
-        android:id="@+id/btnStop"
-        android:onClick="clickButton"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
-    -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -43,29 +6,39 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:keepScreenOn="true"
-        android:orientation="vertical"
-        android:id="@+id/linearLayout">
+        android:orientation="vertical">
 
         <fragment
             android:id="@+id/fragment_place"
+            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
             tools:layout="@layout/main_layout" />
     </LinearLayout>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Count"
-        android:id="@+id/btnStop"
-        android:onClick="clickButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStop"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:onClick="clickButton"
+            android:text="Count" />
+    </LinearLayout>
+
+
 </RelativeLayout>

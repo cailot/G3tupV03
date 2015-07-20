@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="Timer Setting" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+    <!-- just giving space at the top -->
+    <PreferenceCategory android:icon="@null"></PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Snooze Setting">
         <EditTextPreference
+            android:inputType="number"
             android:key="timerSet"
             android:summary="After when do you want to wake up ?"
-            android:title="Seconds"
-            android:inputType="number"
-            />
+            android:title="Minutes" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Exercise Setting" >
+    <PreferenceCategory android:title="Exercise Setting">
         <EditTextPreference
-            android:key="exerciseSet"
-            android:summary="How many stretching you want ?"
-            android:title="Times"
             android:inputType="number"
-            />
+            android:key="exerciseSet"
+            android:summary="How many stretching do you want ?"
+            android:title="Times" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Alarm Setting" >
+    <PreferenceCategory android:title="Alarm Setting">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -41,14 +42,14 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="Cheating Button Display" >
+    <PreferenceCategory android:title="Cheating Setting" >
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="buttonSet"
+            android:key="cheatSet"
             android:switchTextOff="OFF"
             android:switchTextOn="ON"
-            android:title="Display Button" />
+            android:title="Cheating Button" />
 
     </PreferenceCategory>
 

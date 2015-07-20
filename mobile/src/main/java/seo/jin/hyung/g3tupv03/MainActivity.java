@@ -5,24 +5,29 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    private TextView flagText;
+//    private TextView flagText;
+
+    private ImageView imageView, soundImage, vibrationImage;
+
+    private AnimationDrawable animationDrawable;
 
     private boolean isSoundOn, isVibrationOn;
 
-    private String version = "v09";
+    private String version = "v11";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +35,34 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         // load config items from SharedPreference
         setUpConfig();
-        flagText = (TextView) findViewById(R.id.flagText);
+//        flagText = (TextView) findViewById(R.id.flagText);
+        imageView = (ImageView) findViewById(R.id.imageAnimation);
+        imageView.setBackgroundResource(R.drawable.animation_image);
+        animationDrawable = (AnimationDrawable) imageView.getBackground();
+
+        soundImage = (ImageView) findViewById(R.id.soundImage);
+//        soundImage.setBackgroundResource(R.drawable.animation_image);
+
+        vibrationImage = (ImageView) findViewById(R.id.vibrationImage);
+//        vibrationImage.setBackgroundResource(R.drawable.animation_image);
+
+
+//        animationDrawable.start();
+
         String message = getIntent().getStringExtra(G3tUpConstants.FLAG_FROM_CLIENT);
         if(message==null || message.equalsIgnoreCase(""))
         {
             message = "Nothing comes from client";
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_START)){
             // start ring & vibration
+            animationDrawable.start();
             triggerAlarm(G3tUpConstants.ALARM_START);
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_STOP)){
             // stop ring & vibration
+            animationDrawable.stop();
             triggerAlarm(G3tUpConstants.ALARM_STOP);
         }
-        flagText.setText(message);
+//        flagText.setText("[" + version + "]" + "\t" + message);
     }
 
     private void setUpConfig()
@@ -70,16 +90,6 @@ public class MainActivity extends ActionBarActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
         Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
     }
-
-//    public void startClick(View view)
-//    {
-//        triggerAlarm(G3tUpConstants.ALARM_START);
-//    }
-//
-//    public void stopClick(View view)
-//    {
-//        triggerAlarm(G3tUpConstants.ALARM_STOP);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,15 +128,35 @@ public class MainActivity extends ActionBarActivity {
     private void showSetting()
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        StringBuilder builder = new StringBuilder();
-        builder.append(version + "\n");
-        builder.append("\nTimer : " + preferences.getString("timerSet","NULL"));
-        builder.append("\nExercise : " + preferences.getString("exerciseSet","NULL"));
-        builder.append("\nSound : " + preferences.getBoolean("soundSet", false));
-        builder.append("\nVibratons : " + preferences.getBoolean("vibrationSet", false));
-        builder.append("\nButton : " + preferences.getBoolean("buttonSet", false));
-        flagText.setText(builder.toString());
-        Log.e(G3tUpConstants.TAG, builder.toString());
+        boolean isSound = preferences.getBoolean("soundSet", false);
+        boolean isVibration = preferences.getBoolean("vibrationSet", false);
+
+        if(isSound)
+        {
+            soundImage.setBackgroundResource(R.drawable.m_sound_on);
+        }else{
+            soundImage.setBackgroundResource(R.drawable.m_sound_off);
+        }
+        if(isVibration)
+        {
+            vibrationImage.setBackgroundResource(R.drawable.m_vibration_on);
+        }else{
+            vibrationImage.setBackgroundResource(R.drawable.m_vibration_off);
+        }
+
+
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(version + "\n");
+//        builder.append("\n1. Timer : " + preferences.getString("timerSet","NULL"));
+//        builder.append("\n2. Exercise : " + preferences.getString("exerciseSet","NULL"));
+//        builder.append("\n3. Sound : " + isSound);
+//                builder.append("\n4. Vibratons : " + isVibration);
+//        builder.append("\n5. Button : " + preferences.getBoolean("cheatSet", false));
+//        flagText.setText(builder.toString());
+//
+//
+//
+//        Log.e(G3tUpConstants.TAG, builder.toString());
     }
 
 }

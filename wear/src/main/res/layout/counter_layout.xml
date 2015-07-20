@@ -13,17 +13,28 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="5dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/counterImage"
+        android:layout_above="@+id/counterText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" />
 
     <TextView
         android:id="@+id/counterText"
         android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
         android:textSize="25sp"
+        android:textColor="#404040"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

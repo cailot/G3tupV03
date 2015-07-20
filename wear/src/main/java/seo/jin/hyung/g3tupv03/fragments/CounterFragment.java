@@ -16,10 +16,15 @@
 
 package seo.jin.hyung.g3tupv03.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import seo.jin.hyung.g3tupv03.R;
@@ -30,12 +35,16 @@ import seo.jin.hyung.g3tupv03.R;
 public class CounterFragment extends AbstractFragment {
 
     private TextView bodyText;
+    private ImageView bodyImage;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.counter_layout, container, false);
         bodyText = (TextView) view.findViewById(R.id.counterText);
+        bodyImage = (ImageView) view.findViewById(R.id.counterImage);
+        bodyImage.setBackgroundResource(R.drawable.w_timer);
         return view;
     }
 
@@ -46,7 +55,15 @@ public class CounterFragment extends AbstractFragment {
 
     @Override
     public void setText(String s) {
-        bodyText.setText(s);
+
+        //bodyText.setText(s);
+
+        Spannable words = new SpannableString(s);
+        int minIndex = s.indexOf("Min");
+        int secIndex = s.indexOf("Sec");
+        words.setSpan(new ForegroundColorSpan(Color.parseColor("#00A4F0")), 0, minIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        words.setSpan(new ForegroundColorSpan(Color.parseColor("#00A4F0")), minIndex + "Min".length(), secIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        bodyText.setText(words);
     }
 
     @Override

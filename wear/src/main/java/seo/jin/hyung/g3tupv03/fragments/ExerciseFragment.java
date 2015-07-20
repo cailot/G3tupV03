@@ -49,8 +49,8 @@ public class ExerciseFragment extends AbstractFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.exercise_layout, container, false);
-        downDrawable = getResources().getDrawable(R.drawable.jump_down_50);
-        upDrawable = getResources().getDrawable(R.drawable.jump_up_50);
+        downDrawable = getResources().getDrawable(R.drawable.w_exercise_down);
+        upDrawable = getResources().getDrawable(R.drawable.w_exercise_up);
         bodyText = (TextView) view.findViewById(R.id.exerciseText);
 //        bodyText.setCompoundDrawablesWithIntrinsicBounds(upDrawable, null, null, null);
         setText(G3tUpUtils.getCounterFromPreference(getActivity()));
