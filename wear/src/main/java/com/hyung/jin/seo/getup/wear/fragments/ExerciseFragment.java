@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package seo.jin.hyung.g3tupv03.fragments;
+package com.hyung.jin.seo.getup.wear.fragments;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,12 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.hyung.jin.seo.getup.R;
+import com.hyung.jin.seo.getup.wear.utils.G3tUpConstants;
+import com.hyung.jin.seo.getup.wear.utils.G3tUpUtils;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import seo.jin.hyung.g3tupv03.R;
-import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
-import seo.jin.hyung.g3tupv03.utils.G3tUpUtils;
 
 /**
  * A simple fragment for showing the count

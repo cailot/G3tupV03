@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package seo.jin.hyung.g3tupv03.fragments;
+package com.hyung.jin.seo.getup.wear.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import seo.jin.hyung.g3tupv03.R;
+import com.hyung.jin.seo.getup.R;
 
 /**
  * A simple fragment for showing the count

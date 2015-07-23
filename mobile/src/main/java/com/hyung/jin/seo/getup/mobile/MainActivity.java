@@ -1,4 +1,4 @@
-package seo.jin.hyung.g3tupv03;
+package com.hyung.jin.seo.getup.mobile;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -14,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
+import com.hyung.jin.seo.getup.R;
+import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
+
 
 
 public class MainActivity extends ActionBarActivity {

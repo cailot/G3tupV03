@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="seo.jin.hyung.g3tupv03" >
+    package="com.hyung.jin.seo.getup" >
 
     <uses-permission android:name="android.permission.VIBRATE"/>
 
@@ -8,10 +8,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".G3tUpApplication"
+        android:name="com.hyung.jin.seo.getup.mobile.G3tUpApplication"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.hyung.jin.seo.getup.mobile.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,11 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingActivity"
+        <activity android:name="com.hyung.jin.seo.getup.mobile.SettingActivity"
             android:label="@string/app_name">
         </activity>
-        <receiver android:name=".G3tUpReceiver"></receiver>
-        <service android:name=".G3tUpListenerService">
+        <receiver android:name="com.hyung.jin.seo.getup.mobile.G3tUpReceiver"></receiver>
+        <service android:name="com.hyung.jin.seo.getup.mobile.G3tUpListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
             </intent-filter>

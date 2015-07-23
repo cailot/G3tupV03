@@ -1,4 +1,4 @@
-package seo.jin.hyung.g3tupv03;
+package com.hyung.jin.seo.getup.mobile;
 
 import android.app.Application;
 

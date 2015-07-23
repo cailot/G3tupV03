@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package seo.jin.hyung.g3tupv03;
+package com.hyung.jin.seo.getup.wear;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -38,14 +38,15 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.hyung.jin.seo.getup.R;
+import com.hyung.jin.seo.getup.wear.fragments.AbstractFragment;
+import com.hyung.jin.seo.getup.wear.fragments.CounterFragment;
+import com.hyung.jin.seo.getup.wear.fragments.DisplayFragment;
+import com.hyung.jin.seo.getup.wear.fragments.ExerciseFragment;
+import com.hyung.jin.seo.getup.wear.utils.G3tUpConstants;
 
 import java.util.concurrent.TimeUnit;
 
-import seo.jin.hyung.g3tupv03.fragments.AbstractFragment;
-import seo.jin.hyung.g3tupv03.fragments.CounterFragment;
-import seo.jin.hyung.g3tupv03.fragments.DisplayFragment;
-import seo.jin.hyung.g3tupv03.fragments.ExerciseFragment;
-import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
 
 /**
  * The main activity for the Jumping Jack application. This activity registers itself to receive
@@ -92,7 +93,7 @@ public class G3tUpActivity extends Activity
     private int exerciseCount;
     private boolean isCheatingEnabled;
 
-    private String version = "v11";
+    private String version = "v12";
 
 
     @Override
@@ -179,7 +180,7 @@ public class G3tUpActivity extends Activity
             increaseCount();
         } else {
             // dismiss
-            Log.e(G3tUpConstants.TAG, "Dismiss Activity ?");
+            Log.d(G3tUpConstants.TAG, "Dismiss Activity ?");
         }
     }
 
@@ -315,14 +316,14 @@ public class G3tUpActivity extends Activity
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.e(G3tUpConstants.TAG, "onConnected()");
+        Log.d(G3tUpConstants.TAG, "onConnected()");
 //        triggerActionOnPhone();
     }
 
     public void triggerActionOnPhone() {
         if (googleApiClient != null && googleApiClient.isConnected()) {
             new SendMessageToDataLayer(G3tUpConstants.COMMUNICATIO_PATH, message).start();
-            Log.e(G3tUpConstants.TAG, "Communication thread has triggered");
+            Log.d(G3tUpConstants.TAG, "Communication thread has triggered");
         } else {
             Log.e(G3tUpConstants.TAG, "Failed to send messages");
         }
@@ -344,9 +345,9 @@ public class G3tUpActivity extends Activity
             for (Node node : nodesResult.getNodes()) {
                 MessageApi.SendMessageResult messageResult = Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, message.getBytes()).await();
                 if (messageResult.getStatus().isSuccess()) {
-                    Log.e(G3tUpConstants.TAG, "Sent to " + node.getDisplayName());
-                    Log.e(G3tUpConstants.TAG, "Node Id is " + node.getId());
-                    Log.e(G3tUpConstants.TAG, "Node size is " + nodesResult.getNodes().size());
+                    Log.d(G3tUpConstants.TAG, "Sent to " + node.getDisplayName());
+                    Log.d(G3tUpConstants.TAG, "Node Id is " + node.getId());
+                    Log.d(G3tUpConstants.TAG, "Node size is " + nodesResult.getNodes().size());
                 } else {
                     Log.e(G3tUpConstants.TAG, "Error while sending message");
                 }
@@ -369,7 +370,7 @@ public class G3tUpActivity extends Activity
     protected void onStart() {
         super.onStart();
         googleApiClient.connect();
-        Log.e(G3tUpConstants.TAG, "onStop()");
+        Log.d(G3tUpConstants.TAG, "onStop()");
     }
 
     @Override
@@ -378,6 +379,6 @@ public class G3tUpActivity extends Activity
             googleApiClient.disconnect();
         }
         super.onStop();
-        Log.e(G3tUpConstants.TAG, "onStop()");
+        Log.d(G3tUpConstants.TAG, "onStop()");
     }
 }

@@ -1,4 +1,4 @@
-package seo.jin.hyung.g3tupv03.utils;
+package com.hyung.jin.seo.getup.mobile.utils;
 
 /**
  * Created by jinseo on 2015. 6. 9..

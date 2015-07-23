@@ -1,4 +1,4 @@
-package seo.jin.hyung.g3tupv03.fragments;
+package com.hyung.jin.seo.getup.wear.fragments;
 
 import android.app.Fragment;
 

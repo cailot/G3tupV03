@@ -1,4 +1,4 @@
-package seo.jin.hyung.g3tupv03;
+package com.hyung.jin.seo.getup.mobile;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,9 +10,9 @@ import android.net.Uri;
 import android.os.Vibrator;
 import android.util.Log;
 
-import java.io.IOException;
+import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
 
-import seo.jin.hyung.g3tupv03.utils.G3tUpConstants;
+import java.io.IOException;
 
 /**
  * Created by jinseo on 2015. 6. 23..

@@ -1,9 +1,12 @@
-package seo.jin.hyung.g3tupv03;
+package com.hyung.jin.seo.getup.mobile;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+
+import com.hyung.jin.seo.getup.R;
+
 
 /**
  * Created by jinseo on 2015. 6. 16..

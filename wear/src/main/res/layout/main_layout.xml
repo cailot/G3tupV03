@@ -17,7 +17,7 @@
 
         <fragment
             android:id="@+id/fragment_place"
-            android:name="seo.jin.hyung.g3tupv03.fragments.CounterFragment"
+            android:name="com.hyung.jin.seo.getup.wear.fragments.CounterFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/main_layout" />

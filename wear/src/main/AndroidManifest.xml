@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="seo.jin.hyung.g3tupv03" >
+    package="com.hyung.jin.seo.getup" >
 
     <uses-sdk android:minSdkVersion="20"
         android:targetSdkVersion="21" />
@@ -13,10 +13,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".G3tUpApplication"
+        android:name="com.hyung.jin.seo.getup.wear.G3tUpApplication"
         android:theme="@android:style/Theme.DeviceDefault.Light">
         <activity
-            android:name=".G3tUpActivity"
+            android:name="com.hyung.jin.seo.getup.wear.G3tUpActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

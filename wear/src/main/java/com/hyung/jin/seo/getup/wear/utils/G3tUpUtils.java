@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package seo.jin.hyung.g3tupv03.utils;
+package com.hyung.jin.seo.getup.wear.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
