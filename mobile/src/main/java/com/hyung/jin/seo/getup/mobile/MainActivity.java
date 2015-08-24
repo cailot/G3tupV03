@@ -14,9 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.hyung.jin.seo.getup.R;
 import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
-
 
 
 public class MainActivity extends ActionBarActivity {
@@ -65,6 +66,14 @@ public class MainActivity extends ActionBarActivity {
             triggerAlarm(G3tUpConstants.ALARM_STOP);
         }
 //        flagText.setText("[" + version + "]" + "\t" + message);
+
+        showAd();
+    }
+
+    private void showAd() {
+        AdView adView = (AdView)findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void setUpConfig()
@@ -160,5 +169,9 @@ public class MainActivity extends ActionBarActivity {
 //
 //        Log.e(G3tUpConstants.TAG, builder.toString());
     }
-
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(base);
+//        MultiDex.install(this);
+//    }
 }

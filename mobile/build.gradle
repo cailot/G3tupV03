@@ -25,4 +25,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.google.android.gms:play-services:7.3.0'
     compile 'me.denley.wearprefs:WearPrefs:1.1.2'
+    compile 'com.google.android.gms:play-services-ads:7.8.0'
+    compile ('com.google.android.gms:play-services:+') {
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
 }
+
