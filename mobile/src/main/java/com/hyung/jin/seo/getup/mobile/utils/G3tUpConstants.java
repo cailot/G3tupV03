@@ -45,6 +45,17 @@ public interface G3tUpConstants
 
     public static final String VIBRATION = "vibration";
 
+    public static final String ALARM_HOUR = "alarmHour";
+
+    public static final String ALARM_MINUTE = "alarmMinute";
+
+    public static final String REPEAT_DAY = "repeatDay";
+
+    public static final String SEPARATOR = "OV=I=XseparatorX=I=VO";
+
+
+
+
     public static final String RELEASE = "release";
 
 

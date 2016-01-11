@@ -30,7 +30,6 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -78,29 +77,23 @@ public class G3tUpActivity extends Activity
     private long lastTime = 0;
     private boolean up;
 
-
     private int jumpCounter = 0;
-
-    private Button btnStop;
-
 
     private int status = 0;
 
     private AbstractFragment fragment;
 
-
     private long timerDuration;
-    private int exerciseCount;
-    private boolean isCheatingEnabled;
 
-    private String version = "v12";
+    private int exerciseCount;
+
+    private String version = "v14";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        setUpViews();
         setUpThreshold();
         prepareCommunication();
 
@@ -111,26 +104,11 @@ public class G3tUpActivity extends Activity
     }
 
 
-    // initialise component, in this case it just show Button for test
-    private void setUpViews() {
-
-        btnStop = (Button) findViewById(R.id.btnStop);
-        btnStop.setVisibility(View.INVISIBLE);
-    }
-
     // load info from SharedPreference
     private void setUpThreshold() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-
-        timerDuration = Long.parseLong(preferences.getString("timerSet", "30"));
-
-
+        timerDuration = Long.parseLong(preferences.getString("timerSet", "5"));
         exerciseCount = Integer.parseInt(preferences.getString("exerciseSet", "5"));
-
-        isCheatingEnabled = preferences.getBoolean("cheatSet", false);
-
-        btnStop.setText(exerciseCount + " - " + version);
     }
 
 
@@ -140,30 +118,17 @@ public class G3tUpActivity extends Activity
         // If CounterFragment is about to display, trigger timer as well
         if (status == G3tUpConstants.COUNTER_STATE) {
             fragment = new CounterFragment();
-            CountDownTimer timer = new MyCountDownTimer(G3tUpConstants.SECOND * timerDuration, G3tUpConstants.SECOND);
+            CountDownTimer timer = new MyCountDownTimer(G3tUpConstants.SECOND * timerDuration * 60, G3tUpConstants.SECOND);
             timer.start();
 
             // ExerciseFragment
         } else if (status == G3tUpConstants.EXERCISE_STATE) {
 
-            ///////////////////////
-            // Temporary Button
-            //////////////////////
-
-            if(isCheatingEnabled) {
-                btnStop.setVisibility(View.VISIBLE);
-            }
             fragment = new ExerciseFragment();
 
             // DisplayFragment
         } else {
 
-            ///////////////////////
-            // Temporary Button
-            //////////////////////
-            if(isCheatingEnabled) {
-                btnStop.setVisibility(View.INVISIBLE);
-            }
             fragment = new DisplayFragment();
         }
         FragmentManager fm = getFragmentManager();
@@ -283,15 +248,10 @@ public class G3tUpActivity extends Activity
 
             );
             fragment.setText(remain);
-
-
-//            fragment.setText("" + millisUntilFinished/1000);
-
         }
 
         @Override
         public void onFinish() {
-//            fragment.setText("Finished");
             message = G3tUpConstants.ALARM_START;
             triggerActionOnPhone();
 

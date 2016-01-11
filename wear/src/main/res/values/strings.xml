@@ -15,7 +15,7 @@
 -->
 
 <resources>
-     <string name="app_name">졸려</string>
+     <string name="app_name">XuP</string>
      <string name="reset_counter">Reset Counter</string>
      <string name="long_press_intro">Bye~!</string>
 </resources>

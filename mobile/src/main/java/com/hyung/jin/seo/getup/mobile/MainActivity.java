@@ -5,24 +5,32 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.hyung.jin.seo.getup.R;
 import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
 
+import static com.hyung.jin.seo.getup.R.drawable.toast;
+
 
 public class MainActivity extends ActionBarActivity {
 
-//    private TextView flagText;
+    private TextView flagText;
 
     private ImageView imageView, soundImage, vibrationImage;
 
@@ -49,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         vibrationImage = (ImageView) findViewById(R.id.vibrationImage);
 //        vibrationImage.setBackgroundResource(R.drawable.animation_image);
 
+        flagText = (TextView) findViewById(R.id.showInfo);
 
 //        animationDrawable.start();
 
@@ -69,7 +78,24 @@ public class MainActivity extends ActionBarActivity {
 
         showAd();
     }
-
+    public void imageClick(View view) {
+        TextView tv = new TextView(getApplicationContext());
+        tv.setText("Toggle can be done under Settings Menu");
+        tv.setHeight(80);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextSize(16);
+        tv.setTextColor(Color.CYAN);
+        LinearLayout ll = new LinearLayout(getApplicationContext());
+        ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        ll.setBackgroundResource(toast);
+        ll.setPadding(30, 0, 30, 0);
+        ll.setGravity(Gravity.CENTER);
+        ll.addView(tv);
+        Toast t = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_LONG);
+        t.setGravity(Gravity.CENTER, 0, 0);
+        t.setView(ll);
+        t.show();
+    }
     private void showAd() {
         AdView adView = (AdView)findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -156,18 +182,18 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-//        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 //        builder.append(version + "\n");
-//        builder.append("\n1. Timer : " + preferences.getString("timerSet","NULL"));
-//        builder.append("\n2. Exercise : " + preferences.getString("exerciseSet","NULL"));
-//        builder.append("\n3. Sound : " + isSound);
-//                builder.append("\n4. Vibratons : " + isVibration);
+        builder.append("1. Timer : " + preferences.getInt(G3tUpConstants.ALARM_HOUR,0) + " : " + preferences.getInt(G3tUpConstants.ALARM_MINUTE, 0));
+        builder.append("\n2. Repeat : " + preferences.getString(G3tUpConstants.REPEAT_DAY,"NULL"));
+        builder.append("\n3. Sound : " + isSound);
+        builder.append("\n4. Vibratons : " + isVibration);
 //        builder.append("\n5. Button : " + preferences.getBoolean("cheatSet", false));
-//        flagText.setText(builder.toString());
+        flagText.setText(builder.toString());
 //
 //
 //
-//        Log.e(G3tUpConstants.TAG, builder.toString());
+        Log.e(G3tUpConstants.TAG, builder.toString());
     }
 //    @Override
 //    protected void attachBaseContext(Context base) {

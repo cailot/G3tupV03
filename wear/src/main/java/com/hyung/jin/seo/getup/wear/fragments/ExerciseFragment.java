@@ -16,6 +16,8 @@
 
 package com.hyung.jin.seo.getup.wear.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,12 +47,24 @@ public class ExerciseFragment extends AbstractFragment {
     private Drawable upDrawable;
 
 
+
+    private Drawable resize(Drawable image) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.exercise_layout, container, false);
         downDrawable = getResources().getDrawable(R.drawable.w_exercise_down);
         upDrawable = getResources().getDrawable(R.drawable.w_exercise_up);
+
+//        downDrawable = resize(downDrawable);
+//        upDrawable = resize(upDrawable);
+
         bodyText = (TextView) view.findViewById(R.id.exerciseText);
 //        bodyText.setCompoundDrawablesWithIntrinsicBounds(upDrawable, null, null, null);
         setText(G3tUpUtils.getCounterFromPreference(getActivity()));

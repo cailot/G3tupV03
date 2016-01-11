@@ -29,7 +29,7 @@
                 android:id="@+id/soundImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:onClick="imageClick"
                 android:layout_alignParentLeft="true"
                 android:adjustViewBounds="true" />
 
@@ -37,6 +37,7 @@
                 android:id="@+id/vibrationImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="imageClick"
                 android:layout_alignParentRight="true"
                 android:adjustViewBounds="true" />
         </RelativeLayout>
@@ -52,6 +53,14 @@
             android:paddingTop="100dp"
             android:scaleType="fitCenter"
             android:paddingBottom="100dp" />
+
+        <TextView
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/showInfo"
+            android:textColor="#1c21b0"
+            android:text="Info" />
+
     </LinearLayout>
 
     <!-- Admob -->

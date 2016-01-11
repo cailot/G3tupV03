@@ -11,6 +11,7 @@ import com.hyung.jin.seo.getup.R;
 /**
  * Created by jinseo on 2015. 6. 16..
  */
+
 public class SettingActivity extends ActionBarActivity//PreferenceActivity
 {
     @Override

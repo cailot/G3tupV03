@@ -6,23 +6,34 @@
     <PreferenceCategory android:icon="@null"></PreferenceCategory>
 
 
-    <PreferenceCategory android:title="Snooze Setting">
-        <EditTextPreference
-            android:inputType="number"
-            android:key="timerSet"
-            android:summary="After when do you want to wake up ?"
-            android:title="Minutes" />
+    <PreferenceCategory android:title="Alarm Setting">
+        <com.hyung.jin.seo.getup.mobile.utils.TimePreference
+            android:key="timeSet"
+            android:name="Default notification time"
+            android:summary="Set alarm to wake up"
+            android:dialogLayout="@layout/time_preference"
+            android:dialogTitle=""
+            android:title="Time To Wake Up" />
+        <com.hyung.jin.seo.getup.mobile.utils.MultiSelectPreference
+            android:key="daysSet"
+            android:selectable="true"
+            android:dialogTitle="Please select days to apply"
+            android:summary="Set days to apply"
+            android:entries="@array/days_entries"
+            android:entryValues="@array/days_values"
+            android:title="Day Selection" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Exercise Setting">
         <EditTextPreference
             android:inputType="number"
             android:key="exerciseSet"
+            android:defaultValue="5"
             android:summary="How many stretching do you want ?"
             android:title="Times" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Alarm Setting">
+    <PreferenceCategory android:title="Notification Setting">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -38,18 +49,6 @@
             android:switchTextOff="OFF"
             android:switchTextOn="ON"
             android:title="Enable Vibration" />
-
-    </PreferenceCategory>
-
-
-    <PreferenceCategory android:title="Cheating Setting" >
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="cheatSet"
-            android:switchTextOff="OFF"
-            android:switchTextOn="ON"
-            android:title="Cheating Button" />
 
     </PreferenceCategory>
 
