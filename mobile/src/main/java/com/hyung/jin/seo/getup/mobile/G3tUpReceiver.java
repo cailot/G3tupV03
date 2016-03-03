@@ -1,6 +1,5 @@
 package com.hyung.jin.seo.getup.mobile;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -8,7 +7,9 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
 /**
  * Created by jinseo on 2015. 6. 23..
  */
-public class G3tUpReceiver extends BroadcastReceiver {
+public class G3tUpReceiver extends WakefulBroadcastReceiver {//BroadcastReceiver {
 
     // Vibration
     static Vibrator vibrator;
@@ -58,6 +59,8 @@ public class G3tUpReceiver extends BroadcastReceiver {
                 mediaPlayer.start();
             }
             Log.d(G3tUpConstants.TAG, "Alarm starts");
+            //bring the screen onto foreground
+            bringMeOn(context);
 
         }else if((action!=null) && (action.equalsIgnoreCase(G3tUpConstants.ALARM_STOP))){
             if(isVibration) {
@@ -78,6 +81,16 @@ public class G3tUpReceiver extends BroadcastReceiver {
             Log.d(G3tUpConstants.TAG, "Nothing happens");
 
         }
+    }
+
+    private void bringMeOn(Context context) {
+        // Start the MainActivity
+        Intent i = new Intent(context, G3UpMobileActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
+
+        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show(); // For example
+
     }
 
     private void setupAlarm(Context context)

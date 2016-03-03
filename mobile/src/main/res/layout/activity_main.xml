@@ -29,7 +29,6 @@
                 android:id="@+id/soundImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="imageClick"
                 android:layout_alignParentLeft="true"
                 android:adjustViewBounds="true" />
 
@@ -37,7 +36,6 @@
                 android:id="@+id/vibrationImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="imageClick"
                 android:layout_alignParentRight="true"
                 android:adjustViewBounds="true" />
         </RelativeLayout>
@@ -49,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
+            android:onClick="cancelAlarm"
             android:background="@drawable/border"
             android:paddingTop="100dp"
             android:scaleType="fitCenter"

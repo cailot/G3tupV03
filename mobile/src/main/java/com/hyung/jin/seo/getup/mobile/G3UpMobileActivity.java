@@ -27,22 +27,27 @@ import com.hyung.jin.seo.getup.R;
 import com.hyung.jin.seo.getup.mobile.utils.G3tUpConstants;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.hyung.jin.seo.getup.R.drawable.toast;
 
 
-public class MainActivity extends ActionBarActivity {
+public class G3UpMobileActivity extends ActionBarActivity {
 
     /***************************************************
-         System Managers
+     System Managers
      **************************************************/
     private AlarmManager alarmManager;
 
     private NotificationManager notificationManager;
 
+//    private Calendar alarmTime;
+
+    private PendingIntent alarmIntent;
 
     /***************************************************
-         UI Components
+     UI Components
      **************************************************/
     private TextView flagText;
 
@@ -51,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
     private AnimationDrawable animationDrawable;
 
     /***************************************************
-        Config Items
+     Config Items
      **************************************************/
     private int hour, minute;
 
@@ -63,10 +68,16 @@ public class MainActivity extends ActionBarActivity {
 
     private String version = "v1";
 
+
+    SharedPreferences preferences;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // register system manager
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -74,23 +85,71 @@ public class MainActivity extends ActionBarActivity {
         setUpConfig();
         // build layout
         setUpUI();
+        // display setting value
+        showSetting();
 
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        registerPreferenceListener();
+        /*
         String message = getIntent().getStringExtra(G3tUpConstants.FLAG_FROM_CLIENT);
         if(message==null || message.equalsIgnoreCase(""))
         {
             message = "Nothing comes from client";
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_START)){
             // start ring & vibration
-            animationDrawable.start();
-            triggerAlarm(G3tUpConstants.ALARM_START);
+            startAlarm();
         }else if(message.equalsIgnoreCase(G3tUpConstants.ALARM_STOP)){
             // stop ring & vibration
-            animationDrawable.stop();
-            triggerAlarm(G3tUpConstants.ALARM_STOP);
+            cancelAlarm();
         }
-//        flagText.setText("[" + version + "]" + "\t" + message);
+        */
+//        showAd();
 
-        showAd();
+
+    }
+
+    private void registerPreferenceListener() {
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                // cancel existing alarm
+                cancelAlarm();
+                // reload changed config items
+                setUpConfig();
+                // display updated values
+                showSetting();
+                // set alarm based on updated value
+                startAlarm();
+            }
+        };
+        preferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    private void startAlarm()
+    {
+        animationDrawable.start();
+        triggerAlarm(G3tUpConstants.ALARM_START, getAlarmTime());
+    }
+
+    private void cancelAlarm()
+    {
+        animationDrawable.stop();
+        //triggerAlarm(G3tUpConstants.ALARM_STOP);
+        triggerAlarm(G3tUpConstants.ALARM_STOP, getAlarmTime());
+    }
+
+    public void cancelAlarm(View v)
+    {
+        cancelAlarm();
+    }
+
+    private Calendar getAlarmTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        return calendar;
     }
 
     private void setUpUI() {
@@ -98,11 +157,8 @@ public class MainActivity extends ActionBarActivity {
         imageView.setBackgroundResource(R.drawable.animation_image);
         animationDrawable = (AnimationDrawable) imageView.getBackground();
         soundImage = (ImageView) findViewById(R.id.soundImage);
-//        soundImage.setBackgroundResource(R.drawable.animation_image);
         vibrationImage = (ImageView) findViewById(R.id.vibrationImage);
-//        vibrationImage.setBackgroundResource(R.drawable.animation_image);
         flagText = (TextView) findViewById(R.id.showInfo);
-//        animationDrawable.start();
     }
 
     public void imageClick(View view) {
@@ -140,14 +196,21 @@ public class MainActivity extends ActionBarActivity {
         repeatDays = preferences.getString(G3tUpConstants.REPEAT_DAY,"").split(G3tUpConstants.SEPARATOR);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpConfig();
-        showSetting();
-    }
+//    private void triggerAlarm(String action)
+//    {
+//        Intent intent = new Intent(this, G3tUpReceiver.class);
+//        intent.putExtra(G3tUpConstants.ACTION, action);
+//        intent.putExtra(G3tUpConstants.SOUND, isSoundOn);
+//        intent.putExtra(G3tUpConstants.VIBRATION, isVibrationOn);
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+//        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
+//    }
 
-    private void triggerAlarm(String action)
+
+    private void triggerAlarm(String action, Calendar calendar)
     {
         Intent intent = new Intent(this, G3tUpReceiver.class);
         intent.putExtra(G3tUpConstants.ACTION, action);
@@ -156,8 +219,10 @@ public class MainActivity extends ActionBarActivity {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.d(G3tUpConstants.TAG, "start alarm  -  sound : " + isSoundOn + " , vibration : " + isVibrationOn + "  set at " + new Date());
     }
 
     @Override
@@ -186,20 +251,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-//        if(audioManager!=null && mediaPlayer!=null) {
-//            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
-//            mediaPlayer.release();
-//        }
-//        triggerAlarm(G3tUpConstants.RELEASE);
         super.onDestroy();
     }
 
     private void showSetting()
     {
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean isSound = preferences.getBoolean("soundSet", false);
-//        boolean isVibration = preferences.getBoolean("vibrationSet", false);
-
         if(isSoundOn)
         {
             soundImage.setBackgroundResource(R.drawable.m_sound_on);
@@ -213,23 +269,12 @@ public class MainActivity extends ActionBarActivity {
             vibrationImage.setBackgroundResource(R.drawable.m_vibration_off);
         }
 
-
         StringBuilder builder = new StringBuilder();
-//        builder.append(version + "\n");
         builder.append("1. Timer : " + hour + " : " + minute);
         builder.append("\n2. Repeat : " + Arrays.toString(repeatDays));
         builder.append("\n3. Exercise Time : " + exerciseTime);
         builder.append("\n4. Sound : " + isSoundOn);
         builder.append("\n5. Vibratons : " + isVibrationOn);
-        flagText.setText(builder.toString());
-//
-//
-//
-        Log.e(G3tUpConstants.TAG, builder.toString());
+        Log.d(G3tUpConstants.TAG, builder.toString());
     }
-//    @Override
-//    protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(base);
-//        MultiDex.install(this);
-//    }
 }

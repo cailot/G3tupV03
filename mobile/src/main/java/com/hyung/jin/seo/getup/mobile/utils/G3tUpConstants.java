@@ -53,7 +53,11 @@ public interface G3tUpConstants
 
     public static final String SEPARATOR = "OV=I=XseparatorX=I=VO";
 
+    public static final String EXERCISE_TIME = "exerciseSet";
 
+    public static final String SOUND_SET = "soundSet";
+
+    public static final String VIBRATION_SET = "vibrationSet";
 
 
     public static final String RELEASE = "release";
